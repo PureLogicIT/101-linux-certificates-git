@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>IP & Device Information</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 2em;
+    background: #f5f7fa;
+    color: #333;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 80%;
+    max-width: 600px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  th, td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background-color: #007acc;
+    color: white;
+  }
+  tr:hover {
+    background-color: #f1f9ff;
+  }
+  caption {
+    caption-side: top;
+    font-size: 1.5em;
+    padding: 10px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <h1>IP & Device Information</h1>
+
+  <table>
+    <caption>Connection & Device Info</caption>
+    <tbody>
+      <tr>
+        <th>Client IP</th>
+        <td id="client-ip">Loading...</td>
+      </tr>
+      <tr>
+        <th>Server IP</th>
+        <td id="server-ip">Loading...</td>
+      </tr>
+      <tr>
+        <th>User Agent</th>
+        <td id="userAgent"></td>
+      </tr>
+      <tr>
+        <th>Language</th>
+        <td id="language"></td>
+      </tr>
+      <tr>
+        <th>Platform</th>
+        <td id="platform"></td>
+      </tr>
+      <tr>
+        <th>Device Memory (GB)</th>
+        <td id="deviceMemory"></td>
+      </tr>
+      <tr>
+        <th>CPU Cores</th>
+        <td id="cpuCores"></td>
+      </tr>
+      <tr>
+        <th>Screen Resolution</th>
+        <td id="screenRes"></td>
+      </tr>
+      <tr>
+        <th>Touch Support</th>
+        <td id="touchSupport"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Fetch Client IP
+    fetch("https://api.ipify.org?format=json")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("client-ip").textContent = data.ip;
+      })
+      .catch(() => {
+        document.getElementById("client-ip").textContent = "Error fetching client IP";
+      });
+
+    // Fetch Server IP
+    fetch("https://ifconfig.me/ip")
+      .then(res => res.text())
+      .then(ip => {
+        document.getElementById("server-ip").textContent = ip.trim();
+      })
+      .catch(() => {
+        document.getElementById("server-ip").textContent = "Error fetching server IP";
+      });
+
+    // Browser & Device Info
+    document.getElementById("userAgent").textContent = navigator.userAgent || "N/A";
+    document.getElementById("language").textContent = navigator.language || "N/A";
+    document.getElementById("platform").textContent = navigator.platform || "N/A";
+    document.getElementById("deviceMemory").textContent = navigator.deviceMemory || "Unknown";
+    document.getElementById("cpuCores").textContent = navigator.hardwareConcurrency || "Unknown";
+    document.getElementById("screenRes").textContent = `${screen.width} x ${screen.height}`;
+    document.getElementById("touchSupport").textContent =
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0) ? "Yes" : "No";
+  </script>
+</body>
+</html>
