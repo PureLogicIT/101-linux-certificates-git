@@ -39,8 +39,8 @@ Create our application directory. We'll use the git repository from the last ste
 ```bash
 cd /var/www
 git clone https://github.com/PureLogicIT/101-linux-certificates-git tutorial
-cd tutorial
-git checkout git-repo
+cd tutorial/11-install-nginx
+git checkout main
 ```
 Verify that the index.html file is correct.
 ```bash
