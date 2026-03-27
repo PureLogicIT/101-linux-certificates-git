@@ -3,13 +3,13 @@
 
 We will be using 3 machines for this exercise: 
 - Your Workstation
-- Jumpbox
-- Server
+- jumpbox (server1)
+- ca-server (server2)
 
 
 ## Prerequisites
 
-Verify if we can ssh from your workstation to the jumpbox (server2), and then from the jumpbox to the server. This will create the .ssh directory at the same time
+Verify if we can ssh from your workstation to the jumpbox (server1), and then from the jumpbox to the server. This will create the .ssh directory at the same time. 
 ```bash
 ssh [{username}@]jumpbox
 
@@ -17,7 +17,7 @@ ssh pluser@192.169.0.109
 ```
 
 ```bash
-ssh [{username}@]server
+ssh [{username}@]server1
 
 ssh 192.169.0.110
 ```
@@ -27,7 +27,7 @@ ssh 192.169.0.110
 On each VM rename them to match `workstation`, `server1`, `server2`
 
 ```bash
-hostnamectl hostname workstation
+sudo hostnamectl hostname workstation
 cat /etc/hostname
 ```
 You will need to logout and log back in to see the prompt change.
@@ -46,7 +46,7 @@ Host jumpbox
         HostName {jumpbox ip address}
         User {jumpbox username}
 ```
-example:
+Example:
 ```bash
 Host jumpbox
         HostName 192.168.0.109
@@ -68,13 +68,13 @@ vi .ssh/config
 Add the information to SSH to the server in the private subnet. This time we're going to add the extra `ProxyJump` attribute
 
 ```bash
-Host {server connction name}
+Host {server connection name}
         HostName {server ip address}
         User {server username}
         ProxyJump {jumpbox}
 ```
 
-example:
+Example:
 ```bash
 Host server3
         HostName 192.168.0.110
@@ -87,3 +87,4 @@ Now you can connect to a server easily through a jumpbox without needing to spec
 ```bash
 ssh server3
 ```
+

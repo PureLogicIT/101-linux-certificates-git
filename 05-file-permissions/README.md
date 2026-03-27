@@ -38,8 +38,11 @@ In the permission value 744, the first digit corresponds to the user, the second
 For example, a file might have read, write, and execute permissions for its owner, and only read permission for all other users. That looks like this:
 
 Owner: rwx = 4+2+1 = 7
+
 Group: r-- = 4+0+0 = 4
+
 Others: r-- = 4+0+0 = 4
+
 The results produce the three-digit value 744.
 
 
@@ -56,7 +59,9 @@ The results produce the three-digit value 744.
 
 `sudo chmod 777 testfile` is the same as `sudo chmod u=rwx,g=rwx,o=rwx testfile` and the same as `sudo chmod a=rwx testfile`
 
-all 3 of the above commands result in a file with the permissions: `-rwxrwxrwx  1 root root    0 Nov  8 20:58 testfile`
+all 3 of the above commands result in a file with the permissions: 
+
+`-rwxrwxrwx  1 root root    0 Nov  8 20:58 testfile`
 
 ## File and Folder Ownership
 
@@ -65,7 +70,7 @@ all 3 of the above commands result in a file with the permissions: `-rwxrwxrwx  
 In this case the user owner is root, and the group owner is root. To change user or group ownership, use the chown command: 
 
 ```bash
-chown user:group file
+chown {user}:{group} {file}
 ```
 
 Change ownership to the user "testuser", but remains with the root group: `-rw-r--r--  1 testuser root    0 Nov  8 20:58 testfile`

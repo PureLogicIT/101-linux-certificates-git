@@ -17,7 +17,7 @@ ssh-keygen
 
 Enter the file in which to save the key
 ```bash
-(/home/{user}/.ssh/id_id_ed25519)
+(/home/{user}/.ssh/id_ed25519)
 ```
 
 Enter a passphrase
@@ -54,6 +54,7 @@ Setting a passphrase to the private key is optional but recommended. This protec
 
 This created two files `id_ed25519` and `id_ed25519.pub`. `id_ed25519` is your private key and should never be shared or leave your workstation. `id_ed25519.pub` is the public key, it can and will be shared.
 
+To view the contents of the public key
 ```bash
 cat ~/.ssh/id_ed25519.pub
 ```
@@ -68,13 +69,13 @@ Copy the key using the ssh-copy-id command
 ```bash
 ssh-copy-id {user}@{serverip}
 ```
-- EXAMPLE: ssh-copy-id testuser@10.45.2.1
+- EXAMPLE: `ssh-copy-id testuser@10.45.2.1`
 
 Enter your user password
 ```bash
 {user}@{serverip}'s password: 
 ```
-- EXAMPLE: testuser@10.45.2.1's password:
+- EXAMPLE: `testuser@10.45.2.1's password:`
 
 ## Login to the remote Host without a password
 
@@ -84,11 +85,11 @@ Login
 ```bash
 ssh {user}@{serverip}
 ```
-- EXAMPLE: ssh testuser@10.45.2.1
+- EXAMPLE: `ssh testuser@10.45.2.1`
 
- Now you can connect to the server without a password.
+Now you can connect to the server without a password.
 
-You can very the `authorized_keys` file
+You can verify the `authorized_keys` file
 
 ```bash
 ls -l ~/.ssh/authorized_keys
@@ -97,7 +98,7 @@ cat ~/.ssh/authorized_keys
 
 ## Disable Password Login
 
-We can enforce the use of SSH Keys by disabling password authentication, as recommended by the NIST standard
+We can enforce the use of SSH Keys by disabling password authentication, as recommended by the NIST standard. 
 
 
 Edit the sshd config file
@@ -111,9 +112,9 @@ Find the line for `PasswordAuthentication` and set it to `no`
 PasswordAuthentication no
 ```
 
-## Aditional Information
+## Additional Information
 
-SSH (Secure Shell or Secure Socket Shell) is a network protocol that gives users -- particularly systems administrators -- a secure way to access a computer over an unsecured network.
+SSH (Secure Shell or Secure Socket Shell) is a network protocol that gives users - particularly systems administrators - a secure way to access a computer over an unsecured network.
 
 In addition to providing strong encryption, SSH is widely used by network administrators to manage systems and applications remotely, enabling them to log in to another computer over a network, execute commands and move files from one computer to another.
 

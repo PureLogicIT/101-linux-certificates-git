@@ -2,11 +2,11 @@
 
 ## Creating a user
 
-For this course let's create a user named ansibleuser with the default home directory
+Let's create a user named `ansibleuser` with the default home directory. 
 
 ### Adding a user with useradd
 
-On the ***server1*** we'll use the more manual `useradd` cli 
+On `server1` we'll use the more manual `useradd` cli 
 
 ```bash
 sudo useradd -m ansibleuser
@@ -16,7 +16,7 @@ sudo useradd -m ansibleuser
 
 ### Set a password a user
 
-Change the password for ansibleuser
+Change the password for `ansibleuser`
 
 ```bash
 sudo passwd ansibleuser
@@ -28,11 +28,11 @@ passwd: password updated successfully
 
 ### Add a user using adduser
 
-On ***server2***, we can use the more user friendly `adduser` cli. It will automatically create a home directory and group memberships and prompt for a password to be set.
+On `server2`, we can use the more user friendly `adduser` cli. It will automatically create a home directory and group memberships and prompt for a password to be set.
 
 
 ```bash
-sudo adduser anisbleuser
+sudo adduser ansibleuser
 
 Adding user `ansibleuser' ...
 Adding new group `ansibleuser' (1004) ...
@@ -66,19 +66,19 @@ sudo groupadd courseadmin
 
 ### Add user to group with usermod
 
-On ***server1***, add the `pluser` user to the new `courseadmin` group
+On `server1`, add the `pluser` user to the new `courseadmin` group
 ```bash
-sudo usermod -aG cousadmin pluser
+sudo usermod -aG courseadmin pluser
 ```
 
-`-a` to append the user to supplemental GROUPS mentioned by the -G option without removing the user from other groups
-`-G` specifies the group to add, and that the group is not the user's primary group
+- `-a` to append the user to supplemental GROUPS mentioned by the -G option without removing the user from other groups
+- `-G` specifies the group to add, and that the group is not the user's primary group
 
 ### Add user to group with usermod
 
 You can also use the adduser command to add a user to a group
 
-On the ***server2*** run the following command
+On the `server2` run the following command
 
 ```bash
 sudo adduser pluser courseadmin
@@ -103,22 +103,22 @@ You see every user's current home directory in the `passwd` file
 cat /etc/passwd
 ```
 
-*passwd*
+`/etc/passwd`:
 ```
 ...
 pluser:x:1001:1001:,,,:/home/pluser:/bin/bash
 ...
 ```
-
+Each line is structured as follows:
 ```
 <username>:<placeholder for password>:<UID>:<GID>:<Full Name,Room Number,Work Phone,Home Phone>:<home directory>:<shell>
 ```
 
 ## Change a user's shell
 
-The default shell on Ubuntu is `bash` but user's can use many different shells.
+The default shell on Ubuntu is `bash` but users can use many different shells.
 
-To set a user's default shell, we can use the `chsh` commnand but first we need to know which shells are installed on the server
+To set a user's default shell, we can use the `chsh` command but first we need to know which shells are installed on the server
 
 ```bash
 cat /etc/shells
