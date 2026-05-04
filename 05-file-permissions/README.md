@@ -13,7 +13,7 @@ lrwxrwxrwx  1 root root   10 Nov  8 21:05 symlink -> ./testfile
 -rw-r--r--  1 root root    0 Nov  8 20:58 testfile
 ```
 
-Explanation of information in each line: 
+Explanation of information in each line:
 
 ![File Permissions](permissions.png)
 
@@ -25,8 +25,8 @@ To make changes to permissions you can use the `chmod` command with either **oct
 |w (write)  | 2   |
 |x (execute)| 1   |
 
-
 The numbers are representing binary positions in order of `rwx`:
+
 |Permission|Binary|
 |----------|------|
 |r         | 100  |
@@ -45,44 +45,53 @@ Others: r-- = 4+0+0 = 4
 
 The results produce the three-digit value 744.
 
-
 | Octal digit | Permission(s) granted                         | Symbolic    |
 |-------------|-----------------------------------------------|-------------|
-| 0           | None                                          | [u/g/o]-rwx |
-| 1           | Execute permission only                       | [u/g/o]=x   |
-| 2           | Write permission only                         | [u/g/o]=w   |
-| 3           | Write and execute permissions only: 2 + 1 = 3 | [u/g/o]=wx  |
-| 4           | Read permission only                          | [u/g/o]=r   |
-| 5           | Read and execute permissions only: 4 + 1 = 5  | [u/g/o]=rx  |
-| 6           | Read and write permissions only: 4 + 2 = 6    | [u/g/o]=rw  |
+| 0           | None                                          | [u/g/o]=rwx |
+| 1           | Execute permission only                       | [u/g/o]=--x |
+| 2           | Write permission only                         | [u/g/o]=-w- |
+| 3           | Write and execute permissions only: 2 + 1 = 3 | [u/g/o]=-wx |
+| 4           | Read permission only                          | [u/g/o]=r-- |
+| 5           | Read and execute permissions only: 4 + 1 = 5  | [u/g/o]=r-x |
+| 6           | Read and write permissions only: 4 + 2 = 6    | [u/g/o]=rw- |
 | 7           | All permissions: 4 + 2 + 1 = 7                | [u/g/o]=rwx |
 
-`sudo chmod 777 testfile` is the same as `sudo chmod u=rwx,g=rwx,o=rwx testfile` and the same as `sudo chmod a=rwx testfile`
+`sudo chmod 777 testfile` is the same as `sudo chmod u=rwx,g=rwx,o=rwx testfile`, and the same as `sudo chmod a=rwx testfile`.
 
-all 3 of the above commands result in a file with the permissions: 
+All 3 of the above commands result in a file with the permissions:
 
 `-rwxrwxrwx  1 root root    0 Nov  8 20:58 testfile`
 
 ## File and Folder Ownership
 
-`-rw-r--r--  1 root root    0 Nov  8 20:58 testfile`
-
-In this case the user owner is root, and the group owner is root. To change user or group ownership, use the chown command: 
+In this case the user owner is root, and the group owner is root. To change user or group ownership, use the chown command:
 
 ```bash
 chown {user}:{group} {file}
 ```
 
-Change ownership to the user "testuser", but remains with the root group: `-rw-r--r--  1 testuser root    0 Nov  8 20:58 testfile`
+- Resulting permissions: `-rw-r--r--  1 root root    0 Nov  8 20:58 testfile`
+
+To change ownership to the user "testuser", but remains with the root group:
+
 ```bash
 chown testuser testfile
 ```
 
-Change the group ownership to "testgroup" to: `-rw-r--r--  1 testuser testgroup    0 Nov  8 20:58 testfile`
+- Resulting permissions: `-rw-r--r--  1 testuser root    0 Nov  8 20:58 testfile`
+
+To change the group ownership to "testgroup" to:
+
 ```bash
 chown :testgroup testfile
 ```
-Change the ownership back to the user root, and root group: `-rw-r--r--  1 root root    0 Nov  8 20:58 testfile`
+
+- Resulting permissions: `-rw-r--r--  1 testuser testgroup    0 Nov  8 20:58 testfile`
+
+Change the ownership back to the user root, and root group:
+
 ```bash
 chown root:root testfile
 ```
+
+- Resulting permissions: `-rw-r--r--  1 root root    0 Nov  8 20:58 testfile`

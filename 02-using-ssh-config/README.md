@@ -1,15 +1,15 @@
 # SSH Through a Jumpbox using config files
 
+We will be using 3 machines for this exercise:
 
-We will be using 3 machines for this exercise: 
 - Your Workstation
 - jumpbox (server1)
 - ca-server (server2)
 
-
 ## Prerequisites
 
-Verify if we can ssh from your workstation to the jumpbox (server1), and then from the jumpbox to the server. This will create the .ssh directory at the same time. 
+Verify if we can ssh from your workstation to the jumpbox (server1), and then from the jumpbox to the server. This will create the .ssh directory at the same time.
+
 ```bash
 ssh [{username}@]jumpbox
 
@@ -30,23 +30,29 @@ On each VM rename them to match `workstation`, `server1`, `server2`
 sudo hostnamectl hostname workstation
 cat /etc/hostname
 ```
+
 You will need to logout and log back in to see the prompt change.
 
 ## SSH Config
 
 ### Jumpbox ssh configuration
+
 Create or edit the SSH config file on your workstation
+
 ```bash
 vi .ssh/config
 ```
 
-Add the following lines 
+Add the following lines
+
 ```bash
 Host jumpbox
         HostName {jumpbox ip address}
         User {jumpbox username}
 ```
+
 Example:
+
 ```bash
 Host jumpbox
         HostName 192.168.0.109
@@ -54,6 +60,7 @@ Host jumpbox
 ```
 
 From your workstation, test the new configuration
+
 ```bash
 ssh jumpbox
 ```
@@ -61,6 +68,7 @@ ssh jumpbox
 ### Server ssh configuration
 
 Modify the ssh config file on your workstation again
+
 ```bash
 vi .ssh/config
 ```
@@ -75,6 +83,7 @@ Host {server connection name}
 ```
 
 Example:
+
 ```bash
 Host server3
         HostName 192.168.0.110
@@ -87,4 +96,3 @@ Now you can connect to a server easily through a jumpbox without needing to spec
 ```bash
 ssh server3
 ```
-

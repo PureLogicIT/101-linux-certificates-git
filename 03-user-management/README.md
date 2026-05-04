@@ -2,17 +2,17 @@
 
 ## Creating a user
 
-Let's create a user named `ansibleuser` with the default home directory. 
+Let's create a user named `ansibleuser` with the default home directory.
 
 ### Adding a user with useradd
 
-On `server1` we'll use the more manual `useradd` cli 
+On `server1` we'll use the more manual `useradd` cli
 
 ```bash
 sudo useradd -m ansibleuser
 ```
 
-`-m` creates a home directory for the user in the default location
+- `-m` creates a home directory for the user in the default location
 
 ### Set a password a user
 
@@ -29,7 +29,6 @@ passwd: password updated successfully
 ### Add a user using adduser
 
 On `server2`, we can use the more user friendly `adduser` cli. It will automatically create a home directory and group memberships and prompt for a password to be set.
-
 
 ```bash
 sudo adduser ansibleuser
@@ -57,9 +56,10 @@ Is the information correct? [Y/n] y
 
 Permissions can be assigned to individual users or to groups.
 
-Create a group that will be used in a later lesson
+Create a group that will be used in a later lesson.
 
-On ***both*** servers, create the group
+On **both** servers, create the group
+
 ```bash
 sudo groupadd courseadmin
 ```
@@ -67,6 +67,7 @@ sudo groupadd courseadmin
 ### Add user to group with usermod
 
 On `server1`, add the `pluser` user to the new `courseadmin` group
+
 ```bash
 sudo usermod -aG courseadmin pluser
 ```
@@ -74,7 +75,7 @@ sudo usermod -aG courseadmin pluser
 - `-a` to append the user to supplemental GROUPS mentioned by the -G option without removing the user from other groups
 - `-G` specifies the group to add, and that the group is not the user's primary group
 
-### Add user to group with usermod
+### Add user to group with adduser
 
 You can also use the adduser command to add a user to a group
 
@@ -94,8 +95,7 @@ A user's home directory can be changed at any time.
 sudo usermod -m -d /usr/testuser testuser
 ```
 
-`-m` will move the existing content, if any, from the current home folder to the new home folder, /usr/testuser, for the user 'testuser'
-
+- `-m` will move the existing content, if any, from the current home folder to the new home folder, /usr/testuser, for the user 'testuser'
 
 You see every user's current home directory in the `passwd` file
 
@@ -104,13 +104,16 @@ cat /etc/passwd
 ```
 
 `/etc/passwd`:
-```
+
+```text
 ...
 pluser:x:1001:1001:,,,:/home/pluser:/bin/bash
 ...
 ```
+
 Each line is structured as follows:
-```
+
+```text
 <username>:<placeholder for password>:<UID>:<GID>:<Full Name,Room Number,Work Phone,Home Phone>:<home directory>:<shell>
 ```
 
@@ -118,7 +121,7 @@ Each line is structured as follows:
 
 The default shell on Ubuntu is `bash` but users can use many different shells.
 
-To set a user's default shell, we can use the `chsh` command but first we need to know which shells are installed on the server
+To set a user's default shell, we can use the `chsh` command but first we need to know which shells are installed on the server.
 
 ```bash
 cat /etc/shells

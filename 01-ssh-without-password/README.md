@@ -1,4 +1,4 @@
-# SSH Without A Password 
+# SSH Without A Password
 
 Before we can do any work we'll need to be able to connect to the servers. With Linux the standard way to access them is via SSH.
 
@@ -10,27 +10,32 @@ SSH using a password works well but isn't as secure. Your password is sent to th
 
 ## Generate public/private ssh key pair
 
-Run the following command 
+Run the following command
+
 ```bash
 ssh-keygen
 ```
 
 Enter the file in which to save the key
+
 ```bash
 (/home/{user}/.ssh/id_ed25519)
 ```
 
 Enter a passphrase
+
 ```bash
 Press Enter if you don't want a passphrase (leave empty)
 ```
 
 Validate the passphrase
+
 ```bash
 Press Enter if you don't want a passphrase (leave empty)
 ```
 
 The results
+
 ```bash
 Your identification has been saved in /home/{user}/.ssh/id_ed25519.
 Your public key has been saved in /home/{user}/.ssh/id_ed25519.pub.
@@ -50,11 +55,12 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-Setting a passphrase to the private key is optional but recommended. This protects the connection with multiple factors (Something you know, the passphrase. Something you have, the key)
+Setting a passphrase to the private key is optional but recommended. This protects the connection with multiple factors (Something you know: the passphrase. Something you have: the key)
 
 This created two files `id_ed25519` and `id_ed25519.pub`. `id_ed25519` is your private key and should never be shared or leave your workstation. `id_ed25519.pub` is the public key, it can and will be shared.
 
 To view the contents of the public key
+
 ```bash
 cat ~/.ssh/id_ed25519.pub
 ```
@@ -66,26 +72,32 @@ In order for the host to allow your private key to connect you need to give it y
 The `ssh-copy-id` cli will automatically do all of this for you.
 
 Copy the key using the ssh-copy-id command
+
 ```bash
 ssh-copy-id {user}@{serverip}
 ```
-- EXAMPLE: `ssh-copy-id testuser@10.45.2.1`
+
+- Example: `ssh-copy-id testuser@10.45.2.1`
 
 Enter your user password
+
 ```bash
 {user}@{serverip}'s password: 
 ```
-- EXAMPLE: `testuser@10.45.2.1's password:`
+
+- Example: `testuser@10.45.2.1's password:`
 
 ## Login to the remote Host without a password
 
 Now that your public key has been added to the host we can login.
 
 Login
+
 ```bash
 ssh {user}@{serverip}
 ```
-- EXAMPLE: `ssh testuser@10.45.2.1`
+
+- Example: `ssh testuser@10.45.2.1`
 
 Now you can connect to the server without a password.
 
@@ -98,17 +110,17 @@ cat ~/.ssh/authorized_keys
 
 ## Disable Password Login
 
-We can enforce the use of SSH Keys by disabling password authentication, as recommended by the NIST standard. 
-
+We can enforce the use of SSH Keys by disabling password authentication, as recommended by the NIST standard.
 
 Edit the sshd config file
+
 ```bash
 sudo vi /etc/ssh/sshd_config
 ```
 
 Find the line for `PasswordAuthentication` and set it to `no`
 
-```
+```text
 PasswordAuthentication no
 ```
 
