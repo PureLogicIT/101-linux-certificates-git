@@ -28,12 +28,16 @@ Below are the most common options for configuring Git. Run these commands from a
 
     Git configurations can be set globally (for all repositories) or locally (for the current repository only).
 
-    - Global: Use the `--global` flag to set a configuration that applies to all repositories on your machine.
-    - Local: Omit the `--global` flag to set the configuration for the current repository only.
+    Global: Use the `--global` flag to set a configuration that applies to all repositories on your machine.
 
     ```bash
     git config --global <option> <value>
-    git config <option> <value>   # Sets for the current repository only
+    ```
+
+    Local: Omit the `--global` flag to set the configuration for the current repository only.
+
+    ```bash
+    git config <option> <value>
     ```
 
 2. Setting Username and Email
@@ -80,17 +84,16 @@ Below are the most common options for configuring Git. Run these commands from a
 | `git push <remote> <branch>` | Pushes local changes to a remote repository. Typically, the remote is `origin`, and the branch is `main` or `master`. |
 | `git pull <remote> <branch>` | Fetches changes from a remote repository and merges them into the current branch. |
 
-
 ## Creating a new repository
 
-Start by creating a new folder called `git-example`.
+Start by creating a new folder called `git-repo`.
 
 ```bash
 mkdir git-repo
 cd git-repo
 ```
 
-Create a file here called `README.md` with just a header for Git Example
+Create a file called `README.md` with the following header.
 
 ```bash
 echo "# Git Repo " > README.md
@@ -108,19 +111,19 @@ Now that the folder is tracked with git you can look at the `status`
 git status
 ```
 
-  ```
-  On branch master
+```bash
+On branch master
 
-  No commits yet
+No commits yet
 
-  Untracked files:
-   (use "git add <file>..." to include in what will be committed)
-          README.md
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        README.md
 
-  nothing added to commit but untracked files present (use "git add" to track)
-  ```
- 
-So you can see that there's a file that isn't yet tracked by git, because it's new.
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+In the above output, you can see that there's a file that isn't yet tracked by git, because it's new.
 
 You can `add` that file to our commit
 
@@ -134,7 +137,7 @@ Running `status` again will show that it is now staged and will be included in o
 git status
 ```
 
-```
+```bash
 On branch master
 
 No commits yet
@@ -143,29 +146,32 @@ Changes to be committed:
   (use "git rm --cached <file>..." to unstage)
         new file:   README.md
 ```
-So we can now `commit` this has our first commit
+
+So we can now `git commit` this as our first commit
 
 ```bash
-git commit -m "inital commit"
+git commit -m "Initial commit"
 ```
-`-m` is for the commit message. If you don't specify it at the command line it will launch your default editor (nano in this case) for you to write a commit message.
 
-Running `status` again will show that there is no untracked changes
+- `-m` is for the commit message. If it is not specified, it will launch your default editor (nano in this case) for you to write a commit message.
+
+Running `status` again will show that there are no untracked changes
 
 ```bash
 git status
 ```
 
-```
+```bash
 On branch master
 nothing to commit, working tree clean
 ```
 
 Modify README.md to add some text to it
 
-*README.md*
-```
-# Git Example 2
+`README.md`:
+
+```text
+# Git Repo
 Something
 ```
 
@@ -181,7 +187,7 @@ You see the file tagged as being modified. We can see exactly what has been modi
 git diff
 ```
 
-```
+```text
 diff --git a/README.md b/README.md
 index 0b86574..f5b70f7 100644
 --- a/README.md
@@ -192,11 +198,11 @@ index 0b86574..f5b70f7 100644
 +Something
 ```
 
-`Add` the file and commit the changes
+Add the file and commit the changes
 
 ```bash
 git add .
-git commit -m "modified the text"
+git commit -m "modified the readme file"
 ```
 
 Now we can look at the history of changes
@@ -205,7 +211,7 @@ Now we can look at the history of changes
 git log
 ```
 
-```
+```text
 commit 4f77676cc0d52de6bebb17a6e39d4194886b59c3 (HEAD -> master)
 Author: Your Name <you@domain.com>
 Date:   Thu Jun 19 18:08:18 2025 +0000
@@ -213,20 +219,21 @@ Date:   Thu Jun 19 18:08:18 2025 +0000
     modified the text
 
 commit 8f9e6608b62d47e0c0d96b134473869895a3523a
-Author: Your Name <you@doamin.com>
+Author: Your Name <you@domain.com>
 Date:   Thu Jun 19 17:43:02 2025 +0000
 
     initial commit
 ```
 
-The changes are in decending order of time, with the latest commit at the top.
+The changes are in chronological order, with the latest commit at the top.
 
-So now let's say you want to undo the change you just did because it broke something. Take the commit number of the latest change and `revert` it
+If you want to undo the change you just did because it broke something. Take the commit number of the latest change and `revert` it
+
 ```bash
 git revert 4f77676cc0d52de6bebb17a6e39d4194886b59c3
 ```
 
-Running `log` again you'll see it created a third commit saying it was reverting the second one. It doesn't actually delete the second one from the history
+Running `git log` again you'll see it created a third commit saying it was reverting the second one. `git revert` doesn't actually delete the commit from history.
 
 ## Cloning a Repository
 
@@ -236,21 +243,21 @@ To start, on server1, clone this repository
 git clone https://github.com/PureLogicIT/101-linux-certificates-git
 ```
 
-It will create a directory called `101-linux-certificates-git`. Change to that directory
+It will create a directory called `101-linux-certificates-git`. Change to the new directory
 
 ```bash
 cd 101-linux-certificates-git
 ```
 
-Checkout the branch called, `git-branch`
+Checkout the branch called `git-example`
 
 ```bash
-git checkout git-branch
+git checkout git-example
 ```
 
-There should be two mew files, `index.html` and `default.conf`.
+There should be two new files, `index.html` and `tutorial.conf`.
 
-In `index.html` Set a welcome message to use for your website later
+In `index.html`, set a welcome message in place of `WELCOME MESSAGE HERE` to use for your website later
 
 ```html
 <!doctype html>
@@ -282,9 +289,9 @@ Changes not staged for commit:
 no changes added to commit (use "git add" and/or "git commit -a")
 ```
 
-You can inspect the specific changes of that file.
+You can inspect the specific changes that were made to the file.
 
-```
+```bash
 git diff index.html
 ```
 
@@ -308,13 +315,13 @@ Changes to be committed:
         modified:   index.html
 ```
 
-We'll need to set a description message to this commit. You should add a useful message detailing the changes of the commit. 
+Add a useful message detailing the changes of the commit.
 
 ```bash
 git commit -m "Set a welcome message"
 ```
 
-Again you can check status of the change.
+Again you can check the status of the change.
 
 ```bash
 git status
@@ -325,7 +332,7 @@ Your branch is ahead of 'origin/master' by 1 commit.
 nothing to commit, working tree clean
 ```
 
-Then simply push your local changes which have been commited to the remote repo.
+Then simply push your local changes which have been committed to the remote repo.
 
 ```bash
 git push
@@ -351,14 +358,14 @@ To remoterepo/ILTrainingCourses/101-linux-certificates-git.git
 | `git branch <new-feature>` | Add a branch name to create a new branch. |
 | `git checkout <new-feature>` | Switches to the specified branch. Added a `-b` creates and switches to the new branch. |
 | `git merge <branch>` | Merges the specified branch into the current branch. |
-| `git branch -d <branch>` | Deletes the specified branch. Will fail if there are unmerged changes. Use `-D` to force deletion. | 
+| `git branch -d <branch>` | Deletes the specified branch. Will fail if there are unmerged changes. Use `-D` to force deletion. |
 
 ## Undoing Changes
 
 | Git Command | Explanation |
 | :--------- | ------- |
 | `git reset <file>` | Unstages a file withou discarding the changes. |
-| `git checkout --` <file> | Discards changes in a file by restoring it to the last committed version. |
+| `git checkout -- <file>` | Discards changes in a file by restoring it to the last committed version. |
 | `git revert a1b2c3d4` | Creates a new commit that undoes the changes from a specified commit. |
 | `git reset --hard a1b2c3d4` | Resets the current branch to a specified commit and discards all changes since that commit. |
 
@@ -366,10 +373,9 @@ To remoterepo/ILTrainingCourses/101-linux-certificates-git.git
 
 | Git Command | Explanation |
 | :--------- | ------- |
-| `git log` | Shows the commit history for the repository. Use `--oneline` for a simplfied view. |
+| `git log` | Shows the commit history for the repository. Use `--oneline` for a simplified view. |
 | `git diff` | Shows differences between files in the working directory and the staging area. Add a file name to see changes for a specific file. |
 | `git show <commit>` | Displays information and changes for a specified commit. |
-
 
 ## Working with Remote Repositories
 
@@ -378,7 +384,6 @@ To remoterepo/ILTrainingCourses/101-linux-certificates-git.git
 | `git remote -v` | Lists all remote connections for the repository. Each remote connection has a name and a URL. |
 | `git remote add <name> <url>` | Adds a new remote repository with a specified name. |
 | `git fetch <remote>` | Retrieves changes from a remote repository without merging them. |
-
 
 ## Additional Resources
 

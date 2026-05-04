@@ -8,16 +8,19 @@ This guide introduces the basics of a Certificate Authority (CA) and provides in
 
 A **Certificate Authority (CA)** is a trusted entity that issues digital certificates, which are used to verify the authenticity of websites, software, and other digital entities. A CA signs certificates for end users, servers, or other entities, enabling secure communication via SSL/TLS. Organizations can create their own CA to issue and manage certificates for internal use, ensuring secure connections within private networks.
 
-> **Use Cases**:
-> - **Internal Networks**: For signing certificates used on internal applications.
-> - **Development & Testing**: For generating certificates in test environments without relying on an external CA.
-> - **Client Certificate Authentication**: For generating and signing certificates used in mutual (two-way) SSL/TLS authentication.
+Use Cases:
+
+- **Internal Networks**: For signing certificates used on internal applications.
+- **Development & Testing**: For generating certificates in test environment without relying on an external CA.
+- **Client Certificate Authentication**: For generating and signing certificates used in mutual (two-way) SSL/TLS authentication.
 
 ---
 
 ## Creating a Certificate Authority (CA) with OpenSSL
 
-Follow these steps to set up a simple Certificate Authority using OpenSSL. SSH to ***server2***
+Follow these steps to set up a simple Certificate Authority using OpenSSL.
+
+Start by connecting via SSH to `server2`.
 
 ### 1. Set Up a CA Directory Structure
 
@@ -30,13 +33,14 @@ touch my-ca/index.txt
 echo 1000 > my-ca/serial
 ```
 
-**Explanation of the Structure**
-- certs/: Directory to store issued certificates.
-- crl/: Directory for certificate revocation lists (optional).
-- newcerts/: Directory for new certificates.
-- private/: Directory to store the CA’s private key (restricted access).
-- index.txt: File that tracks issued certificates.
-- serial: File that holds the serial number for certificates (starting at 1000).
+Explanation of the Structure:
+
+- `certs/`: Directory to store issued certificates.
+- `crl/`: Directory for certificate revocation lists (optional).
+- `newcerts/`: Directory for new certificates.
+- `private/`: Directory to store the CA’s private key (restricted access).
+- `index.txt`: File that tracks issued certificates.
+- `serial`: File that holds the serial number for certificates (starting at 1000).
 
 ### 2. Generate the Private Key for the CA
 
@@ -44,9 +48,9 @@ echo 1000 > my-ca/serial
 openssl genpkey -algorithm RSA -out my-ca/private/cakey.pem -aes256
 ```
 
-- algorithm RSA: Specifies the algorithm for the private key.
-- out my-ca/private/cakey.pem: Defines the output file for the private key.
-- aes256: Encrypts the private key with AES-256 encryption for security.
+- `-algorithm RSA`: Specifies the algorithm for the private key.
+- `-out my-ca/private/cakey.pem`: Defines the output file for the private key.
+- `-aes256`: Encrypts the private key with AES-256 encryption for security.
 
 You will be prompted to create a passphrase, which should be securely stored.
 
@@ -58,11 +62,11 @@ You will be prompted to create a passphrase, which should be securely stored.
 openssl req -new -x509 -key my-ca/private/cakey.pem -out my-ca/cacert.pem -days 365
 ```
 
-- new: Generates a new certificate request.
-- x509: Creates a self-signed certificate.
-- key my-ca/private/cakey.pem: Specifies the CA’s private key.
-- out my-ca/cacert.pem: The output file for the CA certificate.
-- days 365: Specifies the certificate’s validity period (1 year in this case).
+- `-new`: Generates a new certificate request.
+- `-x509`: Creates a self-signed certificate.
+- `-key my-ca/private/cakey.pem`: Specifies the CA’s private key.
+- `-out my-ca/cacert.pem`: The output file for the CA certificate.
+- `-days 365`: Specifies the certificate’s validity period (1 year in this case).
 
 You will be prompted to fill in certificate details like country, organization name, and common name (e.g., "My Company CA"). These fields identify your CA.
 
@@ -79,6 +83,7 @@ Copy the CA Certificate to the system’s certificate directory:
 ```bash
 sudo cp my-ca/cacert.pem /usr/local/share/ca-certificates/my-ca-cert.crt
 ```
+
 **Note:** The file extension must but `.crt` and the file must be in `PEM` format
 
 Update the Certificate Store:
@@ -94,6 +99,7 @@ sudo cp my-ca/cacert.pem /etc/pki/ca-trust/source/whitelist/ca-cert.pem
 ```
 
 Update the Certificate Store:
+
 ```bash
 sudo update-ca-trust
 
@@ -103,19 +109,18 @@ This command adds the new CA certificate to the list of trusted CAs on the syste
 
 **Note:** Some Linux distributions may have slightly different directories for storing CA certificates. Refer to your system documentation if needed.
 
-
 ## For Windows Systems
 
 Open the Certificate Manager by running certmgr.msc.
 Import the CA Certificate:
+
 - Go to Trusted Root Certification Authorities > Certificates.
 - Right-click and select All Tasks > Import….
 - Choose your CA certificate file (e.g., my-ca/cacert.pem).
 Complete the import wizard to add the CA certificate to the trusted root authorities.
 
-### For MacOS Systems
+## For MacOS Systems
 
 Open Keychain Access (Applications > Utilities > Keychain Access).\
 Import the CA Certificate by selecting File > Import Items.\
 Set the CA as “Always Trust” under the Trust settings for the imported certificate.
-

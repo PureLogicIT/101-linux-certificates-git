@@ -12,10 +12,9 @@ To view basic information about a certificate, such as its name, expiry date, an
 openssl x509 -in certificate.crt -text -noout
 ```
 
-**Explanation of Arguments**
-- in certificate.crt: Specifies the certificate file to read.
-- text: Outputs the certificate information in a human-readable format.
-- noout: Prevents printing of the raw certificate data.
+- `-in certificate.crt`: Specifies the certificate file to read.
+- `-text`: Outputs the certificate information in a human-readable format.
+- `-noout`: Prevents printing of the raw certificate data.
 
 **Example Output:** You’ll see details like:
 
@@ -34,28 +33,26 @@ To verify if a certificate is signed by a specific Certificate Authority (CA), y
 openssl verify -CAfile ca-cert.pem certificate.crt
 ```
 
-**Explanation of Arguments**
-
-- CAfile ca-cert.pem: Specifies the CA certificate file to use for verification.
-- certificate.crt: The certificate to verify against the CA.
+- `-CAfile ca-cert.pem`: Specifies the CA certificate file to use for verification.
+- `certificate.crt`: The certificate to verify against the CA.
 
 This command will return an output indicating whether the certificate is valid and was issued by the CA specified.
-
 
 ## Checking Certificate Validity Against a Private Key
 
 To verify if a certificate matches a specific private key, you can compare the modulus of both. If the modulus values are identical, the certificate and key match.
 
 1. Get the md5 value of the cert
-```bash
-openssl x509 -noout -modulus -in myapp-cert.pem | openssl md5
-```
 
+    ```bash
+    openssl x509 -noout -modulus -in myapp-cert.pem | openssl md5
+    ```
 
 2. Get the md5 value of the key
-```bash
-openssl rsa -noout -modulus -in myapp-key.pem | openssl md5
-```
+
+    ```bash
+    openssl rsa -noout -modulus -in myapp-key.pem | openssl md5
+    ```
 
 If the MD5 hash outputs are identical, the private key and certificate are paired. If not, they do not match, and you may need to find the correct certificate or key file.
 
@@ -74,5 +71,3 @@ openssl x509 -inform pem -in myapp-cert.pem -outform der -out myapp-cert.der
 ```bash
 openssl x509 -inform der -in myapp-cert.der -outform pem -out myapp-cert2.pem
 ```
-
-
