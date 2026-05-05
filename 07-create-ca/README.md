@@ -102,7 +102,6 @@ Update the Certificate Store:
 
 ```bash
 sudo update-ca-trust
-
 ```
 
 This command adds the new CA certificate to the list of trusted CAs on the system. After completion, applications will recognize certificates signed by this CA as valid.

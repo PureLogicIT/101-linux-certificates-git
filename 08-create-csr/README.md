@@ -98,7 +98,7 @@ The Common Name (CN) field traditionally holds the primary domain name for the c
 
 To include SAN in the CSR, you can use a configuration file or include the additional hostnames in the command line.
 
-To create with a configuration file first create a file, in this case we named it san.cnf:
+To create with a configuration file first create a file, in this case we will name it `san.cnf`:
 
 ```ini
 [ req ]

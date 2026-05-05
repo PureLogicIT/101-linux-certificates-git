@@ -9,14 +9,14 @@ This guide covers key commands for verifying SSL certificates using OpenSSL. You
 To view basic information about a certificate, such as its name, expiry date, and issuing authority, use the following command:
 
 ```bash
-openssl x509 -in certificate.crt -text -noout
+openssl x509 -in myapp-cert.pem -text -noout
 ```
 
-- `-in certificate.crt`: Specifies the certificate file to read.
+- `-in myapp-cert.pem`: Specifies the certificate file to read.
 - `-text`: Outputs the certificate information in a human-readable format.
 - `-noout`: Prevents printing of the raw certificate data.
 
-**Example Output:** You’ll see details like:
+The output will include the following:
 
 |Keys       | Description                                                                |
 |-----------|----------------------------------------------------------------------------|
@@ -30,11 +30,11 @@ openssl x509 -in certificate.crt -text -noout
 To verify if a certificate is signed by a specific Certificate Authority (CA), you can use the following command:
 
 ```bash
-openssl verify -CAfile ca-cert.pem certificate.crt
+openssl verify -CAfile my-ca/cacert.pem myapp-cert.pem
 ```
 
-- `-CAfile ca-cert.pem`: Specifies the CA certificate file to use for verification.
-- `certificate.crt`: The certificate to verify against the CA.
+- `-CAfile my-ca/cacert.pem`: Specifies the CA certificate file to use for verification.
+- `myapp-cert.pem`: The certificate to verify against the CA.
 
 This command will return an output indicating whether the certificate is valid and was issued by the CA specified.
 

@@ -11,7 +11,7 @@ PKCS #12 (Public-Key Cryptography Standards #12), often referred to by its file 
 To create a PKCS #12 file from a certificate and private key, you can use the `openssl` cli.
 
 ```bash
-openssl pkcs12 -export -out myapp-cert.p12 -inkey myapp-key.pem -in myapp-cert.pem -certfile my-ca/ca-cert.pem
+openssl pkcs12 -export -out myapp-cert.p12 -inkey myapp-key.pem -in myapp-cert.pem -certfile my-ca/cacert.pem
 ```
 
 - `-export` Specifies that OpenSSL should export a new PKCS #12 file.

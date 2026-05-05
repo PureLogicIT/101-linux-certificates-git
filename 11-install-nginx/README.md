@@ -43,7 +43,7 @@ Create our application directory. We'll use the git repository from the last ste
 cd /var/www
 git clone https://github.com/PureLogicIT/101-linux-certificates-git tutorial
 cd tutorial/11-install-nginx
-git checkout main
+git checkout git-example
 ```
 
 Verify that the index.html file is correct.
@@ -57,12 +57,17 @@ cat index.html
 Create our application file
 
 ```bash
+cd ..
 sudo cp tutorial.conf /etc/nginx/sites-available/
 cd /etc/nginx/sites-enabled/
 sudo ln -s /etc/nginx/sites-available/tutorial.conf
 ```
 
-Verify the content of *tutorial.conf*
+Verify the content of `tutorial.conf`.
+
+```bash
+cat /var/www/tutorial/tutorial.conf
+```
 
 ```ini
 server {
