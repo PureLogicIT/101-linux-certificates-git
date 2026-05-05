@@ -37,15 +37,15 @@ git clone https://github.com/scribble-rs/scribble.rs.git
 cd scribble.rs
 ```
 
-edit the /internal/config/config.go and replace the port from 8080 to 80
+Edit the `internal/config/config.go` and replace the port from `8080` to `80`.
 
 ```text
-port:80
+Port:80
 ```
 
-build the app to generate the executable app
+Build the app to generate the executable app
 
 ```text
 go build ./cmd/scribblers
-./scribbler-rs
+./scribbler
 ```

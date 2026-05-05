@@ -12,4 +12,4 @@
 09. [Validating certificates via CLI](09-openssl-view-validate-certs)
 10. [Converting pk12 files](10-pk12-conversion)
 11. [Installing NGINX](11-install-nginx)
-11. [Installing ScribbleRS](12-scribble-rs)
+12. [Installing ScribbleRS](12-scribble-rs)
