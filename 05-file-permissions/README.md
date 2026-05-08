@@ -13,9 +13,26 @@ lrwxrwxrwx  1 root root   10 Nov  8 21:05 symlink -> ./testfile
 -rw-r--r--  1 root root    0 Nov  8 20:58 testfile
 ```
 
+- `-a`: (All) Shows hidden files, any file that start with a `.` would be hidden by default. 
+- `-l`: (Long) Shows a detailed list, includes more than just the filenames. Lists permission, owner, filesize, and date modified for each item. 
+
 Explanation of information in each line:
 
 ![File Permissions](permissions.png)
+
+```text
+-rw-r--r--  1 root root    0 Nov  8 20:58 testfile
+```
+
+For the `testfile` line, the permission section has the following value: `-rw-r--r--`. 
+
+- `-`: The initial dash means that `testfile` is a regular file, and not a directory or symbolic link. 
+- `rw-`: The next 3 characters tell us that the user who owns the file (root) has both read and write permissions. 
+- `r--`: These tell us that the group that owns the file (root) has only read access. 
+- `r--`: The last 3 characters, specifying the permissions for others, show that only read access is given. 
+- The first `root` tells us the user that owns the file, and the second `root` shows the group that has access to it. 
+- The next column is the filesize, which since it is only a directory is small. 
+- The last two columns are last modified date and filename. 
 
 To make changes to permissions you can use the `chmod` command with either **octal** or **symbolic** notation. When Linux file permissions are represented by numbers, it's called numeric mode. In numeric mode, a three-digit value represents specific file permissions (for example, 744.) These are called octal values. The first digit is for owner permissions, the second digit is for group permissions, and the third is for other users. Each permission has a numeric value assigned to it:
 
@@ -95,3 +112,136 @@ chown root:root testfile
 ```
 
 - Resulting permissions: `-rw-r--r--  1 root root    0 Nov  8 20:58 testfile`
+
+## Permission example -----
+
+Create a file to change permissions with. 
+
+```bash
+touch testfile
+```
+
+Run the following as a shortcut for `ls -l` to view the permissions on the file we just created. 
+
+```bash
+ll testfile
+```
+
+By default, the file has the following permissions:
+
+`-rw-rw-r--`
+
+This means that `pluser` has read and write permissions, and all others can only read the file. 
+
+Then, add execute permissions for the user. 
+
+```bash
+chmod u+x testfile
+```
+
+Run `ll testfile` to view the change in permissions. 
+
+Set the group permission to only `read`
+
+```bash
+chmod g=r testfile
+```
+
+Check that the permissions were properly updated. 
+
+Add execute permissions for user, group, and others. 
+
+```bash
+chmod +x testfile
+```
+
+View the permission change with `ll testfile`. 
+
+Next, create a folder named `testfolder`. 
+
+```bash
+mkdir testfolder
+```
+
+Move `testfile` into `testfolder`. 
+
+```bash
+mv testfile testfolder
+```
+
+Run `ll`, then `ll testfolder` to view the changes you just made. 
+
+To be able to `cd` into a folder, you must have execute permissions on the folder. 
+
+Remove execute permissions on `testfolder`. 
+
+```bash
+chmod -x testfolder
+```
+
+Now, try to enter the directory. 
+
+```bash
+cd testfolder
+```
+
+You will get an error saying `Permission denied`. 
+
+Try to list the files in `testfolder`. 
+
+```bash
+ll testfolder
+```
+
+Since we don't have enough permission, very few details can be seen. 
+
+```text
+d????????? ? ? ? ?            ? ./
+d????????? ? ? ? ?            ? ../
+-????????? ? ? ? ?            ? testfile
+```
+
+Add execute permissions back to testfolder, and make sure that you can `cd testfolder` again. 
+
+```bash
+chmod +x testfolder
+cd testfolder
+cd ..
+ll testfolder
+```
+
+So far, we've used `chmod` to change the permissions on files and folders. `chown` handles changing who owns the file or directory. 
+
+### JUSTIN ---- WHAT HAPPENED HERE I WOULDN'T HAVE HAD THE PERMS TO DO THIS BUT IT'S IN MY HISTORY
+
+Change the owner of `testfolder` to `ansibleuser`. 
+
+```bash
+chown -R ansibleuser: testfolder
+```
+
+- `-R`: (Recursive) This ensures that `ansibleuser` will be the owner of `testfolder`, as well as the owner of any items inside it (`testfile` in our case).
+- `ansibleuser:`: This is a shortcut for `ansibleuser:ansibleuser`, which sets both the owner and primary group to `ansibleuser`. 
+
+```bash
+chown -R 1002:1002 testfolder
+```
+
+This will fail, saying the operation is not permitted. Linux does not allow regular users to give away ownership of their files. 
+
+Run the command again with sudo to transfer the folder. 
+
+```bash
+sudo chown -R 1002:1002 testfolder
+```
+
+- `1002:1002`: These are the UID and GID's of `ansibleuser`. They can be seen in `cat /etc/passwd`. You can specify the numbers for users/groups instead of their names when changing ownership or permissions.  
+
+Verify that the changes were completed. 
+
+```bash
+ll
+ll testfolder
+```
+
+You will see that the owner and group columns have been updated from `pluser` to `ansibleuser`. 

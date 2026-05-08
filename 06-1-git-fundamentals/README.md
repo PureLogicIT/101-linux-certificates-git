@@ -16,9 +16,35 @@ Example output: `git version 2.34.1`
 
 This command outputs the currently installed Git version, such as 2.34.1. If Git is not installed, it will prompt you to install it.
 
+### Help and Troubleshooting
+
+For an overview of top level git commands. 
+
+```bash
+git -h
+```
+
+To view a summary of a specific command, such as `git commit`. 
+
+```bash
+git commit -h
+```
+
+Or for a more in-depth view
+
+```bash
+git commit --help
+```
+
 ## Git Config
 
 Before starting to work with repositories, it’s important to configure your Git settings. The `git config` command customizes Git’s behaviour, such as setting your username and email, which are used to identify the author of each commit.
+
+To start, check that there are no config settings already set. 
+
+```bash
+git config --list
+```
 
 ### Setting up Git Configurations
 
@@ -51,6 +77,8 @@ Below are the most common options for configuring Git. Run these commands from a
 
     - `user.name`: Specifies your name, which will appear in the commit history.
     - `user.email`: Sets your email address, which is attached to each commit.
+
+    These do not need to be your real name or email, they are only set to help as documentation. 
 
 3. Viewing Configuration Settings
 
@@ -105,6 +133,23 @@ The first thing you need to start tracking any project in git is initialize it. 
 git init
 ```
 
+The following message appears. 
+
+```text
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: is subject to change. To configure the initial branch name to use in all
+hint: of your new repositories, which will suppress this warning, call:
+hint:
+hint:   git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint:   git branch -m <name>
+```
+
+The git CLI uses `master` as the default name for the initial branch. Sites like Github or Gitlab have `main` as their default branch name. Outside of this course, you should set your default branch name to match what your organization uses, following the instructions above. 
+
 Now that the folder is tracked with git you can look at the `status`
 
 ```bash
@@ -125,13 +170,13 @@ nothing added to commit but untracked files present (use "git add" to track)
 
 In the above output, you can see that there's a file that isn't yet tracked by git, because it's new.
 
-You can `add` that file to our commit
+You can `add` that file to your commit
 
 ```bash
 git add README.md
 ```
 
-Running `status` again will show that it is now staged and will be included in our next commit
+Running `status` again will show that it is now staged and will be included in your next commit
 
 ```bash
 git status
@@ -147,13 +192,15 @@ Changes to be committed:
         new file:   README.md
 ```
 
-So we can now `git commit` this as our first commit
+`git status` now shows that the file has been added, but has yet to be committed. 
+
+We can now `git commit` this as our first commit. 
 
 ```bash
 git commit -m "Initial commit"
 ```
 
-- `-m` is for the commit message. If it is not specified, it will launch your default editor (nano in this case) for you to write a commit message.
+- `-m` is for the commit message. If it is not specified, it will launch your default editor  for you to write a commit message.
 
 Running `status` again will show that there are no untracked changes
 
@@ -166,16 +213,36 @@ On branch master
 nothing to commit, working tree clean
 ```
 
-Modify README.md to add some text to it
+After committing our changes, we may notice something broke and want to check what changes just got made. To do this, view the commit log. 
 
-`README.md`:
+```bash
+git log
+```
+
+This log shows a commit SHA (or hash) for each commit, as well as the author information that you set earlier, the commit date, and message. 
+
+Copy the commit SHA and use it to check more details about the commit. 
+
+```bash
+git show {commit SHA}
+```
+
+- Note that only the first few (usually 7) characters are used instead of the entire SHA. 
+
+This allows us to see some more information related to the commit, included at least some of the changes that were made. 
+
+Edit the `README.md` file and add a second line. 
+
+```bash
+vim README.md
+```
 
 ```text
 # Git Repo
-Something
+A new change
 ```
 
-Again, look at the `status` to see the current state
+Checking git status shows that `README.md` has been modified, but not committed, which is what we expect. 
 
 ```bash
 git status
@@ -202,10 +269,16 @@ Add the file and commit the changes
 
 ```bash
 git add .
-git commit -m "modified the readme file"
+git commit
 ```
 
-Now we can look at the history of changes
+- `git add .` adds all files in the current directory and all subdirectories. 
+
+We ran `git commit` without specifying a commit message. When this happens, git opens your configured default text editor, and lets you write a commit message there instead. 
+
+Enter the commit message `Updated README file` and save and close the file. 
+
+Now we can look at the history of changes and see both commits. 
 
 ```bash
 git log
@@ -216,28 +289,262 @@ commit 4f77676cc0d52de6bebb17a6e39d4194886b59c3 (HEAD -> master)
 Author: Your Name <you@domain.com>
 Date:   Thu Jun 19 18:08:18 2025 +0000
 
-    modified the text
+    Updated README file
 
 commit 8f9e6608b62d47e0c0d96b134473869895a3523a
 Author: Your Name <you@domain.com>
 Date:   Thu Jun 19 17:43:02 2025 +0000
 
-    initial commit
+    Initial commit
 ```
 
 The changes are in chronological order, with the latest commit at the top.
 
-If you want to undo the change you just did because it broke something. Take the commit number of the latest change and `revert` it
+If you want to undo the change you just did because it broke something. Take the commit number of the latest change and `revert` it. 
 
 ```bash
 git revert 4f77676cc0d52de6bebb17a6e39d4194886b59c3
 ```
 
+Save and close the text editor that is opened. 
+
 Running `git log` again you'll see it created a third commit saying it was reverting the second one. `git revert` doesn't actually delete the commit from history.
+
+Check the contents of the `README.md` file. 
+
+```bash
+cat README.md
+```
+
+The file should now only contain `# Git Repo`. 
+
+## Git Branches
+
+Working directly on the `master` branch is considered bad practice in professional environments. The `master` branch should always represent a stable, deployable version of the project. Whenever a new feature or bug fix needs to be worked on, you should do so on a dedicated branch. This allows you to make your changes in isolation without breaking the main project. 
+
+Branches should be named descriptively so they can be tracked back to a specific task or issue number (feature/issue-101-update-readme or fix/bug-245-login-page-error)
+
+Create a new branch
+
+```bash
+git branch feature-update-readme
+```
+
+View the list of branches. 
+
+```bash
+git branch
+```
+
+Change to the new branch. 
+
+```bash
+git checkout feature-update-readme
+```
+
+To view the branch that you are currently on. 
+
+```bash
+git status
+```
+
+Make another edit to the `README.md` file. 
+
+```text
+# Git Repo on branch feature-update-readme
+```
+
+`git status` to see what has changed. 
+
+`git diff` to see the text added to the `README.md` file
+
+Add the change, commit it, then check the log. 
+
+```bash
+git add .
+git commit -m "Changes on feature-update-readme"
+git log
+```
+
+Now that we've made our change on the feature branch, we want to bring that change back to the `master` branch. 
+
+To do this, we will **merge** our feature branch into the `master` branch. To start, change to the `master` branch. 
+
+```bash
+git checkout master
+git log
+```
+
+When you run `git log` on the master branch, you will notice that the commit you just made on your feature branch is missing. The changes exist, but they haven't been integrated into the `master` history yet. 
+
+Now, merge the changes made on the feature branch into the `master` branch. 
+
+```bash
+git merge feature-update-readme
+```
+
+Accept the suggested commit message. 
+
+View the git log to see your merge in the commit history. 
+
+```bash
+git log
+git status
+```
+
+## Merge Conflicts
+
+a little bit about what a merge conflict is
+ 
+```bash
+git checkout -b feature-readme-conflict
+```
+
+- `-b`: little explanation on this option
+
+Edit the README.md file to match the following. 
+
+## THIS EXAMPLE NEEDS FIXING ->
+
+```text
+# Git Repo on branch feature-readme-conflict
+
+This line will not conflict
+
+This line is only on the feature branch and will not conflict
+```
+
+Stage the `README.md` file. 
+
+```bash
+git add README.md
+```
+
+Commit the file
+
+```bash
+git commit -m "Updated README file on feature-readme-conflict branch"
+```
+
+Change back to the `master branch`. This time, we will also make changes to the README file on the master branch to cause a merge conflict. 
+
+```bash
+git checkout master
+```
+
+Open the `README.md` file and update it to the following. 
+
+```text
+# Git Repo on branch master
+
+This line will not conflict
+```
+
+Stage and commit the changes. 
+
+```bash
+git add README.md
+git commit -m "Updated README file on master branch"
+```
+
+Before merging the feature branch into `master`, check how the two branches have diverged. 
+
+```bash
+git log --oneline
+```
+
+Then look on the feature branch. 
+
+```bash
+git checkout feature-readme-conflict
+git log --online
+```
+
+Then return back to master and attempt to merge the feature branch. 
+
+```bash
+git checkout master
+git merge feature-readme-conflict
+```
+
+Git will try to automatically merge the `README.md` files from both branches, but will not be able to. 
+
+```text
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+You now have to manually fix the merge conflicts. To do so, open the `README.md` file. 
+
+```text
+<<<<<<< HEAD
+# Git Repo on branch master
+This line is only on the master branch and will not conflict
+=======
+# Git Repo on branch feature-readme-conflict
+>>>>>>> feature
+This line will not conflict
+```
+
+## THIS EXAMPLE NEEDS FIXING ^^
+
+- `<<<<<<< HEAD`: Everything below this is what currently exists on master.
+- `=======`: This is the divider between the two conflicting versions.
+- `>>>>>>> feature-readme-conflict`: Everything above this is what is coming from the feature branch.
+
+To solve the merge conflict, you will have to manually edit the file. 
+
+Delete the markers (<<<, ===, >>>), and decide which text to keep. 
+
+Edit the `README.md` file to match the following
+
+```text
+# Git Repo on branch master
+This line will not conflict
+```
+
+```bash
+git add .
+git status
+```
+
+Now that you have solve all merge conflicts, commit your changes on `master`. 
+
+```bash
+git commit
+```
+
+Even though we didn't specify a commit message, git knows that we are committing our merge, and suggests a simple commit message. 
+
+Save and quit the text editor to accept this commit message. 
+
+On master, we can look at the git log to see the updated history. 
+
+```bash
+git log
+```
+
+This now shows the commit that was made on the feature branch, followed by our merge commit on the `master` branch. 
+
+Take a look at the git log on the feature branch as well. 
+
+```bash
+git checkout feature-readme-conflict
+git log
+```
+
+As we'd expect, there is nothing more past the commit we made on the feature branch, as the merge was done into the master branch, and did not affect the feature branch. 
+
+We are now done with the feature branch, as all of it's changes have been merged into master. You can now delete the feature branch. 
+
+```bash
+git branch -d feature-readme-conflict
+```
 
 ## Cloning a Repository
 
-To start, on server1, clone this repository
+To start, on `webserver`, clone this repository
 
 ```bash
 git clone https://github.com/PureLogicIT/101-linux-certificates-git
@@ -364,7 +671,7 @@ To remoterepo/ILTrainingCourses/101-linux-certificates-git.git
 
 | Git Command | Explanation |
 | :--------- | ------- |
-| `git reset <file>` | Unstages a file withou discarding the changes. |
+| `git reset <file>` | Unstages a file without discarding the changes. |
 | `git checkout -- <file>` | Discards changes in a file by restoring it to the last committed version. |
 | `git revert a1b2c3d4` | Creates a new commit that undoes the changes from a specified commit. |
 | `git reset --hard a1b2c3d4` | Resets the current branch to a specified commit and discards all changes since that commit. |

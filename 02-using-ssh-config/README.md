@@ -1,98 +1,75 @@
-# SSH Through a Jumpbox using config files
+# SSH Through a Jumpbox
 
-We will be using 3 machines for this exercise:
+## Jumpbox ssh configuration
 
-- Your Workstation
-- jumpbox (server1)
-- ca-server (server2)
-
-## Prerequisites
-
-Verify if we can ssh from your workstation to the jumpbox (server1), and then from the jumpbox to the server. This will create the .ssh directory at the same time.
+Edit the SSH config file on your workstation. 
 
 ```bash
-ssh [{username}@]jumpbox
-
-ssh pluser@192.169.0.109
+vi ~/.ssh/config
 ```
 
-```bash
-ssh [{username}@]server1
+Change the webserver entry to also contain `jumpbox` on on the host line. 
 
-ssh 192.169.0.110
-```
-
-## Rename the VMs for simplicity
-
-On each VM rename them to match `workstation`, `server1`, `server2`
-
-```bash
-sudo hostnamectl hostname workstation
-cat /etc/hostname
-```
-
-You will need to logout and log back in to see the prompt change.
-
-## SSH Config
-
-### Jumpbox ssh configuration
-
-Create or edit the SSH config file on your workstation
-
-```bash
-vi .ssh/config
-```
-
-Add the following lines
-
-```bash
-Host jumpbox
-        HostName {jumpbox ip address}
-        User {jumpbox username}
-```
-
-Example:
-
-```bash
-Host jumpbox
-        HostName 192.168.0.109
+```text
+Host webserver jumpbox
+        HostName {webserver IP}
         User pluser
 ```
 
-From your workstation, test the new configuration
+Hosts can have several different names assigned to them, in a space separated list. The indented lines for each host are different configs that have been set for each. 
+
+## SSH to private host
+
+As you saw earlier, the `private` host is not able to be accessed from `workstation`. It can only be connected to from either the `webserver` or `pki-server` VMs. 
+
+### GET MORE FROM JUSTIN: something here about realistically there'd be several layers, different zones, policies on what can access what, and you can set all that jumping around in your ssh config.  
+
+Login to the `webserver` host, and from there try to SSH to the `private` host. We will use the `webserver`'s second name, `jumpbox`, to login to it. 
 
 ```bash
 ssh jumpbox
+ssh {private IP}
 ```
 
-### Server ssh configuration
+This time, you will be able to connect. 
+
+Instead of always having to first connect to an intermediate VM, we want to be able to SSH from the `workstation` straight to the `private` VM. 
+
+To do this, return to the `workstation` host and run the following command
+
+```bash
+ssh -J jumpbox {private IP}
+```
+
+- `-J jumpbox`: This tells SSH to use `jumpbox` as a jump host, and will first establish a connection to `jumpbox`, then following that, one to `private`. 
+
+## SSH Config with ProxyJump
+
+Instead of having to specify a jump host every time we want to connect to the `private` VM, we can instead add this information to the `~/.ssh/config` file. 
 
 Modify the ssh config file on your workstation again
 
 ```bash
-vi .ssh/config
+vi ~/.ssh/config
 ```
 
 Add the information to SSH to the server in the private subnet. This time we're going to add the extra `ProxyJump` attribute
 
 ```bash
-Host {server connection name}
-        HostName {server ip address}
-        User {server username}
-        ProxyJump {jumpbox}
-```
-
-Example:
-
-```bash
-Host server3
-        HostName 192.168.0.110
+Host private
+        HostName {private IP address}
         User pluser
         ProxyJump jumpbox
 ```
 
-Now you can connect to a server easily through a jumpbox without needing to specify anything
+Now you can connect to a server easily through the jumpbox without needing to specify anything
 
 ```bash
-ssh server3
+ssh private
 ```
+
+Now that you can connect to the VM:
+
+- Change the hostname
+- Add your public key to the host
+- Disable password authentication 

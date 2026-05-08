@@ -131,13 +131,15 @@ In order for the host to allow your private key to connect you need to give it y
 
 The `ssh-copy-id` cli will automatically do all of this for you.
 
-Copy the key using the ssh-copy-id command
+We will start with the `webserver` host, followed by repeating the same steps on `pki-server`. 
+
+Copy the key using the `ssh-copy-id` command
 
 ```bash
 ssh-copy-id pluser@webserver
 ```
 
-- Note that your `~/.ssh/config` file already specifies that when connecting to the `webserver` host, `pluser` should be used. Therefore, it is not necessary to specify `pluser` when running ssh-copy-id. 
+- Note that your `~/.ssh/config` file already specifies that `pluser` should be used when connecting to the `webserver` host. Therefore, it is not necessary to specify `pluser` when running ssh-copy-id.
 
 You will then be prompted to enter `pluser`'s password. 
 
@@ -178,7 +180,11 @@ PasswordAuthentication no
 
 ## Repeat on pki-server
 
-On the pki-server: Copy the ssh key, test that you can login, and disable password login. 
+On `pki-server`, repeat the same steps as completed on `webserver`: 
+
+- Copy the ssh key to the host
+- Test that you are able to login
+- Disable password login
 
 ## Attempt password login
 
