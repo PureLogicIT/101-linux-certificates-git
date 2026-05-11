@@ -2,11 +2,25 @@
 
 This guide covers generating a key pair and certificate request that can be signed by a Certificate Authority (CA), as well as recommendations on using Subject Alternative Names (SAN), wildcard certificates, and setting appropriate expiration dates.
 
----
+## Hierarchy of Trust
 
-## Generating a Key Pair and Certificate Signing Request (CSR)
+In production environments, certificates should be organized in a tree structure, with a root, intermediates, and leaves. This structure is known as a **Chain of Trust**. The goal of this setup is to keep the `Root CA` protected. 
 
-To obtain a certificate from your CA, you first need to generate a private key and a CSR. The private key is kept secure, while the CSR is sent to the CA for signing.
+1. **The Root CA**
+
+    The `Root CA` acts as our true source of trust. If a `Root CA`'s private key is leaked, you have to manually update and re-install a new certificate across all devices. To avoid this, `Intermediate CAs` are used. 
+
+2. **Intermediate CAs**
+
+    `Intermediate CAs` are used to handle the daily signing of requests. If an `Intermediate CA` is leaked, revoking and re-issuing that single certificate using the `Root CA` is all that needs to be done, instead of replacing the `Root CA` on all user machines. 
+
+3. **Leaf Certificates**
+
+    `Leaf Certificates` are used by webservers, applications, and individual users. They are short-lived certificates and do not have the authority to sign other certificates. 
+
+## Generating a Key Pair and Certificate Signing Request
+
+To obtain a certificate from your CA, you first need to generate a private key and a Certificate Signing Request (CSR). The private key is kept secure, while the CSR is sent to the CA for signing.
 
 ### Generate the Private Key
 
@@ -17,6 +31,14 @@ openssl genpkey -algorithm RSA -out myapp-key.pem -aes256
 - `-algorithm RSA`: Specifies the RSA algorithm for the key.
 - `-out myapp-key.pem`: Defines the file where the private key will be stored.
 - `-aes256`: Encrypts the private key with AES-256. You will be prompted to enter a passphrase for security.
+
+Run the following to view only the first line of the private key that you just generated. 
+
+```bash
+head -1 myapp-key.pem
+```
+
+The confirms that what we just generated is an encrypted private key. 
 
 ### Generate the CSR
 
@@ -36,6 +58,12 @@ openssl req -new -key myapp-key.pem -out myapp-csr.pem -subj "/C=CA/ST=Ontario/L
 | L    | Locality ex: City       | No                   |
 | O    | Organization            | No (but recommended) |
 | CN   | Common Name             | Yes                  |
+
+View the first line of the CSR file. 
+
+```bash
+head -1 myapp-csr.pem
+```
 
 ### Submit the CSR to the CA
 
@@ -67,12 +95,18 @@ crl_dir         = $dir/crl              # Where the issued crl are kept
 Change the following two lines
 
 ```text
+#policy          = policy_match
+policy          = policy_anything
+```
+
+Uncomment the following lines
+
+```text
 copy_extensions = copy
 ```
 
 ```text
-#policy          = policy_match
-policy          = policy_anything
+unique_subject  = no
 ```
 
 ### Signing the CSR

@@ -47,5 +47,5 @@ Build the app to generate the executable app
 
 ```text
 go build ./cmd/scribblers
-./scribbler
+./scribblers
 ```

@@ -1,6 +1,6 @@
 # Install NGINX
 
-NGINX is a powerful web server software used by several hosting companies. It was designed to handle a high volume of requests simultaneously. Therefore, it offers faster loading times and better performance than most other web servers.
+NGINX is a powerful web server software used by several hosting companies. It was designed to handle a high volume of requests simultaneously. It offers faster loading times and better performance than most other web servers.
 
 Additionally, NGINX uses fewer resources and hardware than other server software. This characteristic makes it a cost-effective solution. It’s also compatible with a variety of web applications.
 
@@ -14,7 +14,7 @@ Update the apt repositories
 sudo apt update
 ```
 
-install NGINX
+Install NGINX
 
 ```bash
 sudo apt install nginx
@@ -24,9 +24,9 @@ Start nginx and set it to autorun on startup
 
 ```bash
 # This starts NGINX now
-systemctl start nginx
+sudo systemctl start nginx
 # This enables NGINX to start on boot
-systemctl enable nginx
+sudo systemctl enable nginx
 ```
 
 Verify that our web server is up.

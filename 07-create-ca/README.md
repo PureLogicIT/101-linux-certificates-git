@@ -20,7 +20,7 @@ Use Cases:
 
 Follow these steps to set up a simple Certificate Authority using OpenSSL.
 
-Start by connecting via SSH to `server2`.
+Start by connecting via SSH to `pki-server`.
 
 ### 1. Set Up a CA Directory Structure
 
@@ -32,6 +32,8 @@ chmod 700 my-ca/private
 touch my-ca/index.txt
 echo 1000 > my-ca/serial
 ```
+
+`chmod 700` is done so that the private keys can only be accessed by the user, and no one else. 
 
 Explanation of the Structure:
 
@@ -52,6 +54,8 @@ openssl genpkey -algorithm RSA -out my-ca/private/cakey.pem -aes256
 - `-out my-ca/private/cakey.pem`: Defines the output file for the private key.
 - `-aes256`: Encrypts the private key with AES-256 encryption for security.
 
+The RSA algorithm is what creates the key pair, and are what will be used to sign certificates. AES-256 is the algorithm used to protect the keys themselves, and is what uses your password you entered to encrypt and decrypt your keys. 
+
 You will be prompted to create a passphrase, which should be securely stored.
 
 **Note: This private key will be used to sign certificates and must be protected carefully.**
@@ -70,9 +74,34 @@ openssl req -new -x509 -key my-ca/private/cakey.pem -out my-ca/cacert.pem -days 
 
 You will be prompted to fill in certificate details like country, organization name, and common name (e.g., "My Company CA"). These fields identify your CA.
 
+Fill the fields with the following info:
+
+- Country Name (2 letter code) [AU]:`CA`
+- State or Province Name (full name) [Some-State]:`Ontario`
+- Locality Name (eg, city) []:
+- Organization Name (eg, company) [Internet Widgits Pty Ltd]:`PL workshop`
+- Organizational Unit Name (eg, section) []:
+- Common Name (e.g. server FQDN or YOUR name) []:`pl workshop CA`
+- Email Address []:
+
+## Distributing the CA Certificate
+
+Now that the `cacert.pem` file has been generated, we want to distribute it to the machine that will need to trust our CA. 
+
+**Note: Never share the `private/cakey.pem` file, only the `cacert.pem` file should ever be shared.**
+
+On `workstation`, copy the certificate from `pki-server` to `webserver`, and to `workstation`. 
+
+```bash
+scp pki-server:my-ca/cacert.pem webserver:
+scp pki-server:my-ca/cacert.pem ./
+```
+
+Now that the file is copied off of `pki-server`, you can install it on `webserver` and `workstation`. 
+
 ## Installing a New CA Certificate
 
-To use the newly created CA to sign certificates, install the CA certificate on systems that need to trust it. The process varies by operating system.
+To use the newly created CA to sign certificates, install the CA certificate on `workstation` and `webserver`. The process varies by operating system.
 
 ### For Linux Systems
 
@@ -81,7 +110,7 @@ Copy the CA Certificate to the system’s certificate directory:
 #### Debian/Ubuntu
 
 ```bash
-sudo cp my-ca/cacert.pem /usr/local/share/ca-certificates/my-ca-cert.crt
+sudo cp cacert.pem /usr/local/share/ca-certificates/my-ca-cert.crt
 ```
 
 **Note:** The file extension must but `.crt` and the file must be in `PEM` format
@@ -91,6 +120,8 @@ Update the Certificate Store:
 ```bash
 sudo update-ca-certificates
 ```
+
+The output of the command should contains the line `1 added, 0 removed; done.`
 
 #### Fedora/Red Hat
 

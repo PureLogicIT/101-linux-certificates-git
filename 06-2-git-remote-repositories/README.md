@@ -40,6 +40,8 @@ Add your Gitea repository as a remote.
 git remote add origin git@git.dev.purelogicit.ca:{your username}/{your repository name}.git
 ```
 
+- Note that this line can also be copied from the gitea page where 
+
 Now, git push will publish your changes to the remote repository that was set above. 
 
 ```bash
@@ -69,7 +71,7 @@ cd git-repo
 Now, we'll create a new branch locally, and publish that branch to Gitea. 
 
 ```bash
-git branch -b feature-branch
+git checkout -b feature-branch
 ```
 
 - `-b` will checkout the branch after it is created. 
@@ -77,31 +79,55 @@ git branch -b feature-branch
 Now, make a change on the new branch. Edit the `README.md` file to match the following. 
 
 ```text
+# Git Repo on feature-branch
 
+A second line
+
+This line will not conflict
+
+A third line
+
+This will not conflict
 ```
 
-In gitea:
- Create repo
- Add SSH Keys
+Add and commit the file once your changes are saved. 
 
-In terminal:
-Add remote
-Push
-cd ..
-rm -rf git-repo
-git clone git://git.dev....
-cd git-repo
-git branch new-branch
-git add
-git commit 
-git pull
-git push
+```bash
+git add .
+git commit -m "change on feature-branch for pull request"
+```
 
-In gitea:
-See that only master and new branch exist
-Create pull request
-Approve Pull request 
-Talk about merge type
+After the change is committed, pull and push to Gitea. 
+
+```bash
+git push -u origin feature-branch
+```
+
+Both the `master` and `feature-branch` branches are now pushed to Gitea. View both branches on the gitea site. 
+
+Navigate to the `Pull Requests` tab, and create a new pull request. 
+
+Both the branches being merged into and being pulled from are set to master by default. Change the branch that is being pulled from (the one on the right) to your `feature-branch`. 
+
+The diff view should now show our change that we made on `feature-branch`. 
+
+Create the pull request. 
+
+Now that the pull request is created, we want to approve it. Click the dropdown beside `Create merge commit` to view the different merge options. 
+
+- `Merge commit`: Combines all branch work and adds a dedicated "merge commit," creating a visible "bubble" in your project history.
+- `Rebase, then fast-forward`: Moves your commits to the very end of the master branch, resulting in a perfectly straight, linear timeline.
+- `Rebase, then create merge commit`: Updates your work to the end of the line first, then adds a merge commit to mark exactly when it was integrated.
+- `Create squash commit`: Adds every individual commit from your feature branch into one single, clean commit to keep the master history tidy.
+- `Fast-forward only`: Only allows the merge if master hasn't changed since you started, ensuring a strictly linear path with zero extra merge commits.
+
+Select and click `Create merge commit`. 
+
+Delete `feature-branch`. It can still be restored by viewing the list of all branches in Gitea. 
+
+## Rebase and squash merges
+
+
 
 In terminal:
 git branch another-new-branch
