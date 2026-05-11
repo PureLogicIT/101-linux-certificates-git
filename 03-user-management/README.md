@@ -21,7 +21,7 @@ The `-m` option is standard because it ensures the environment for the user is r
 To check if the user has been created, run the following command. 
 
 ```bash
-sudo cat /etc/passwd
+cat /etc/passwd
 ```
 
 You will see the following line at the bottom of the output, confirming that the user was created. 
@@ -50,38 +50,43 @@ sudo passwd ansibleuser
 
 On `pki-server`, we can use the more user friendly `adduser` cli. It will automatically create a home directory and group memberships and prompt for a password to be set. `adduser` acts as a wrapper for `useradd`, making it much easier to use if it is available. 
 
+Enter `Ansible User` when prompted for `Full Name`. 
+
 ```bash
 sudo adduser ansibleuser
 
-Adding user `ansibleuser' ...
-Adding new group `ansibleuser' (1004) ...
-Adding new user `ansibleuser' (1004) with group `ansibleuser' ...
-Creating home directory `/home/ansibleuser' ...
-Copying files from `/etc/skel' ...
+[sudo] password for pluser:
+info: Adding user `ansibleuser' ...
+info: Selecting UID/GID from range 1000 to 59999 ...
+info: Adding new group `ansibleuser' (1002) ...
+info: Adding new user `ansibleuser' (1002) with group `ansibleuser (1002)' ...
+info: Creating home directory `/home/ansibleuser' ...
+info: Copying files from `/etc/skel' ...
 New password:
 Retype new password:
 passwd: password updated successfully
 Changing the user information for ansibleuser
 Enter the new value, or press ENTER for the default
-        Full Name []:
+        Full Name []: Ansible User
         Room Number []:
         Work Phone []:
         Home Phone []:
-
         Other []:
-Is the information correct? [Y/n] y
+Is the information correct? [Y/n]
+info: Adding new user `ansibleuser' to supplemental / extra groups `users' ...
+info: Adding user `ansibleuser' to group `users' ...
 ```
 
 Now, check again if the user was created.
 
 ```bash
-sudo cat /etc/passwd
+cat /etc/passwd
 ```
 
 This time, you will see an output like the one below:
 
 ```text
-ansibleuser:x:1002:1002::/home/ansibleuser:/bin/bash
+ansibleuser:x:1002:1002:Ansible User,,,:/home/ansibleuser:/bin/bash
 ```
 
 Without having to specify it, a home directory was created. The shell was also set to `/bin/bash`, which is what we want. 
@@ -94,7 +99,7 @@ Permissions can be assigned to individual users or to groups.
 
 Create a group that will be used in a later lesson.
 
-On **both** `webserver` and `pki-server`, create the group
+On **both** `webserver` and `pki-server`, create the group. 
 
 ```bash
 sudo groupadd courseadmin
@@ -129,7 +134,7 @@ From this output, we can see that `pluser` was added to the `courseadmin` group.
 
 You can also use the adduser command to add a user to a group
 
-On the `pki-server` run the following command
+On `pki-server` run the following command
 
 ```bash
 sudo adduser pluser courseadmin
@@ -195,6 +200,8 @@ The default shell on Ubuntu is `bash` but users can use many different shells. Y
 
 To set a user's default shell, we can use the `chsh` command. We first need to know which shells are installed on the server.
 
+On `webserver`, check the list of available shells. 
+
 ```bash
 cat /etc/shells
 ```
@@ -203,7 +210,7 @@ This will show a list of installed shells.
 
 Copy the full path of the shell you want to set. 
 
-On `webserver`, change the shell for `ansibleuser`. 
+Change the shell for `ansibleuser`. 
 
 Set the shell to `/bin/bash`.
 

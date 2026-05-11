@@ -1,11 +1,5 @@
 # SSH Without A Password
 
-Before we can do any work we'll need to be able to connect to the servers. With Linux the standard way to access them is via SSH.
-
-```bash
-ssh UserName@SSHserver.server1.com
-```
-
 SSH using a password works well but isn't as secure. Your password is sent to the server over the network. The more secure option is SSH with a private key. The private key never leaves your workstation even when connecting to a host.
 
 ## The Case for Key-Based Authentication
@@ -21,7 +15,11 @@ While SSH with a password is functional, it is not considered as secure for seve
 
 Think of the `Public Key` as a padlock. You give a copy of this padlock to a server that you want to be able to connect to. The server is now "locked" with your padlock.  
 
-The `Private Key` is the key that can open the padlock. You keep this key on your workstation at all times. You are now able to connect to the server by proving that your key unlocks the padlock, which is done without your `Private Key` ever leaving your workstation.  
+The `Private Key` is the key that can open the padlock. You keep this key on your workstation at all times. You are now able to connect to the server by proving that your key unlocks the padlock, which is done without your `Private Key` ever leaving your workstation. 
+
+Your `Public Key` is safe to share, and there is no security concern related to sharing a public key. 
+
+Your `Private Key` should never be shared. If it is ever leaked, remove it's public key from any servers you added it to, and regenerate a new key pair. Do not continue to use the leaked key. 
 
 ## Generate public/private ssh key pair
 
@@ -31,17 +29,19 @@ To generate a pair of public and private keys, run the following command
 ssh-keygen
 ```
 
-Enter the file in which to save the key. 
+Leave the file location blank. 
 
 ```bash
 (/home/{user}/.ssh/id_ed25519)
 ```
 
-Enter a passphrase (you can leave this as empty)
+Leave the passphrase blank. 
 
 ```bash
 Press Enter if you don't want a passphrase (leave empty)
 ```
+
+Setting a passphrase to the private key is optional but recommended. This protects the connection with multiple factors (Something you know: the passphrase. Something you have: the key)
 
 The results
 
@@ -64,11 +64,9 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
-Setting a passphrase to the private key is optional but recommended. This protects the connection with multiple factors (Something you know: the passphrase. Something you have: the key)
-
 This created two files `id_ed25519` and `id_ed25519.pub`. `id_ed25519` is your private key and should never be shared or leave your workstation. `id_ed25519.pub` is the public key, which can and will be shared.
 
-To view the contents of the public key
+To view the contents of the public key. 
 
 ```bash
 cat ~/.ssh/id_ed25519.pub
@@ -82,48 +80,22 @@ ssh-ed25519 AAAAC3Nza...4jgu8 pluser@ip-172-16-0-129
 - `AAAAC3Nza...6qXRE/4jgu8`: This is the key itself, the "padlock" from the analogy before. 
 - `pluser@ip-172-16-0-129`: This is only a comment helping to identify the key, usually telling you the username and hostname of the key's owner. 
 
-## SSH Key File Permissions
-
-SSH is extremely strict about file permissions. Keys must only be accessible by your user on your workstation, and SSH will refuse to use them if this is not the case. 
-
-Run the following to view the permissions on the `.ssh` directory
-
-```bash
-ls -ld ~/.ssh
-```
-
-The output
-
-```text
-drwx------ 2 pluser pluser 4096 May  5 18:44 /home/pluser/.ssh
-```
-
-The `rwx` in the output means that the `.ssh` directory can only be accessed by `pluser`, which is your user. This means that no other user can access any files within your `.ssh` directory. 
-
-To view the permissions of the ssh keys we created
+To view the permissions on your ssh keys.
 
 ```bash
 ls -l ~/.ssh
 ```
 
-The output
+The two lines below of the output are the private and public keys. 
 
 ```text
--rw-rw-r-- 1 pluser pluser  181 May  5 18:41 config
--rw------- 1 pluser pluser  419 May  5 18:20 id_ed25519
--rw-r--r-- 1 pluser pluser  104 May  5 18:20 id_ed25519.pub
--rw------- 1 pluser pluser 2934 May  5 18:41 known_hosts
--rw------- 1 pluser pluser 2098 May  5 18:41 known_hosts.old
+-rw------- 1 pluser pluser  411 May  8 14:43 id_ed25519
+-rw-r--r-- 1 pluser pluser  100 May  8 14:43 id_ed25519.pub
 ```
 
-We care about the `id_ed25519` and `id_ed25519.pub` files. 
+Note that the private key (`id_ed25519`) is only can only be read and written to by `pluser`. We do not want any more access than this to be set on the private key. 
 
-- `-rw-------` means that the private key can only be read and edited by `pluser`. 
-- `-rw-r--r--` means that the public key can only be edited by `pluser`, and read by everyone. 
-
-These permissions are strict to ensure that no other user is able to change either key file, or to read your private key. 
-
-More details on file permissions will be covered later in the course. 
+On modern SSH versions (version 8.9+, released in 2022), using `ed25519` you are protected against "harvest now, decrypt later" quantum attacks. It is the current best practice for secure and fast SSH usage. 
 
 ## Copy the SSH Public Key to the Remote Host
 
@@ -136,7 +108,7 @@ We will start with the `webserver` host, followed by repeating the same steps on
 Copy the key using the `ssh-copy-id` command
 
 ```bash
-ssh-copy-id pluser@webserver
+ssh-copy-id pluser@{webserver IP}
 ```
 
 - Note that your `~/.ssh/config` file already specifies that `pluser` should be used when connecting to the `webserver` host. Therefore, it is not necessary to specify `pluser` when running ssh-copy-id.
@@ -153,10 +125,21 @@ ssh webserver
 
 Now you can connect to the server without a password.
 
-You can verify the `authorized_keys` file
+View the permissions on the `authorized_keys` file
 
 ```bash
 ls -l ~/.ssh/authorized_keys
+```
+
+Output:
+
+```text
+-rw------- 1 pluser pluser 675 May  8 14:51 .ssh/authorized_keys
+```
+
+The `-rw-------` describes the permissions. In this case, the `authorized_keys` file is only read and writable by `pluser`, and no one else, which we want. SSH will not function properly if the permissions are different. 
+
+```bash
 cat ~/.ssh/authorized_keys
 ```
 
@@ -176,6 +159,12 @@ Find the line for `PasswordAuthentication` and set it to `no`
 
 ```text
 PasswordAuthentication no
+```
+
+Restart the ssh service after updating the config value. 
+
+```bash
+sudo systemctl restart ssh
 ```
 
 ## Repeat on pki-server
@@ -208,7 +197,7 @@ Move your private key back to the `.ssh` folder to be able to connect to the VMs
 mv ~/id_ed25519 ~/.ssh/
 ```
 
-SSH to `webserver` or `pki-server`. You will not be able to connect again. 
+SSH to `webserver` or `pki-server`. You will now be able to connect again. 
 
 ## Additional Information
 

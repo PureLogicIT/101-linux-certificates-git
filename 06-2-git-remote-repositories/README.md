@@ -66,9 +66,19 @@ cd git-repo
 
 - The `git-repo` at the end of the `git clone` command specifies what the folder that will contain your git repository will be named. By default, this is the same name as that of the repository in Gitea. 
 
-Now, we'll create a new branch locally, and publish our changes to Gitea. 
+Now, we'll create a new branch locally, and publish that branch to Gitea. 
 
+```bash
+git branch -b feature-branch
+```
 
+- `-b` will checkout the branch after it is created. 
+
+Now, make a change on the new branch. Edit the `README.md` file to match the following. 
+
+```text
+
+```
 
 In gitea:
  Create repo

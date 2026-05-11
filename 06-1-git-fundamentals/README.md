@@ -361,10 +361,12 @@ Make another edit to the `README.md` file.
 Add the change, commit it, then check the log. 
 
 ```bash
-git add .
+git add -A
 git commit -m "Changes on feature-update-readme"
 git log
 ```
+
+- `git add -A`: Adds all files and directories within the git directory, not only within your current directory. `git add .` would have had the same effect in this case, but not always. 
 
 Now that we've made our change on the feature branch, we want to bring that change back to the `master` branch. 
 
@@ -394,24 +396,38 @@ git status
 
 ## Merge Conflicts
 
-a little bit about what a merge conflict is
- 
+A merge conflict is what occurs when Git is not able to automatically merge the differences between two branches. Instead of trying to guess at which change is most important, Git allows you to step in and make the decision on which changes to keep, and which to discard. 
+
+Edit the README.md file on `master` to the following:
+
+```text
+# Git Repo
+A second line
+A third line
+```
+
+Add and commit the file. 
+
+```bash
+git add README.md
+git commit -m "Updated README file on master"
+```
+
+Next, create and checkout a new branch called `feature-readme-conflict`. 
+
 ```bash
 git checkout -b feature-readme-conflict
 ```
 
-- `-b`: little explanation on this option
+- `-b` (Branch): Adding this option checks out the branch after it's created. 
 
-Edit the README.md file to match the following. 
-
-## THIS EXAMPLE NEEDS FIXING ->
+Edit the README.md file on `feature-readme-conflict` to match the following. 
 
 ```text
-# Git Repo on branch feature-readme-conflict
-
-This line will not conflict
-
-This line is only on the feature branch and will not conflict
+# Git Repo this will conflict
+A second line
+A third line
+This will not conflict
 ```
 
 Stage the `README.md` file. 
@@ -436,15 +452,16 @@ Open the `README.md` file and update it to the following.
 
 ```text
 # Git Repo on branch master
-
+A second line
 This line will not conflict
+A third line
 ```
 
 Stage and commit the changes. 
 
 ```bash
 git add README.md
-git commit -m "Updated README file on master branch"
+git commit -m "Updated README file on master with second change"
 ```
 
 Before merging the feature branch into `master`, check how the two branches have diverged. 
@@ -453,14 +470,14 @@ Before merging the feature branch into `master`, check how the two branches have
 git log --oneline
 ```
 
-Then look on the feature branch. 
+Look on the feature branch. 
 
 ```bash
 git checkout feature-readme-conflict
-git log --online
+git log --oneline
 ```
 
-Then return back to master and attempt to merge the feature branch. 
+Return back to master and attempt to merge the feature branch. 
 
 ```bash
 git checkout master
@@ -480,18 +497,19 @@ You now have to manually fix the merge conflicts. To do so, open the `README.md`
 ```text
 <<<<<<< HEAD
 # Git Repo on branch master
-This line is only on the master branch and will not conflict
 =======
-# Git Repo on branch feature-readme-conflict
->>>>>>> feature
+# Git Repo this will conflict
+>>>>>>> feature-readme-conflict
+A second line
 This line will not conflict
+A third line
+This will not conflict
 ```
-
-## THIS EXAMPLE NEEDS FIXING ^^
 
 - `<<<<<<< HEAD`: Everything below this is what currently exists on master.
 - `=======`: This is the divider between the two conflicting versions.
 - `>>>>>>> feature-readme-conflict`: Everything above this is what is coming from the feature branch.
+- The content outside of those marks was present on one of the two branches, and was merged together automatically. 
 
 To solve the merge conflict, you will have to manually edit the file. 
 
@@ -501,7 +519,10 @@ Edit the `README.md` file to match the following
 
 ```text
 # Git Repo on branch master
+A second line
 This line will not conflict
+A third line
+This will not conflict
 ```
 
 ```bash
@@ -536,11 +557,16 @@ git log
 
 As we'd expect, there is nothing more past the commit we made on the feature branch, as the merge was done into the master branch, and did not affect the feature branch. 
 
-We are now done with the feature branch, as all of it's changes have been merged into master. You can now delete the feature branch. 
+We are now done with the feature branch, as all of it's changes have been merged into master. 
+
+Tagging the branch creates a pointer to a commit that doesn't move. After tagging the branch, we can then delete the branch itself. 
 
 ```bash
+git tag archive/feature-readme-conflict feature-readme-conflict
 git branch -d feature-readme-conflict
 ```
+
+# REMOVE THIS eventually, but needs to happen somewhere else
 
 ## Cloning a Repository
 

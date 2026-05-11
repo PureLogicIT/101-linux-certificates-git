@@ -37,48 +37,6 @@ ssh {private vm IP}
 
 The connection will not be successful, as the `private` host cannot be accessed directly from the `workstation` VM. In a later section, we will go over how to connect to this host. 
 
-## Initial SSH Config
-
-So far, you had to specify the VM IP when connecting via SSH. To simplify this process, and be able to SSH to the VMs using simple names, we will set hosts in the SSH config file. 
-
-Create or edit the SSH config file on your workstation. 
-
-```bash
-vi ~/.ssh/config
-```
-
-Add the following lines
-
-```text
-Host webserver
-        HostName {webserver IP}
-        User pluser
-```
-
-Save and exit the file. 
-
-From your workstation, test your new SSH configuration. 
-
-```bash
-ssh webserver
-```
-
-You are now able to ssh to the `webserver` host without specifying the IP address every time. 
-
-On your workstation, edit the SSH config file to add the following lines. 
-
-```text
-Host pki-server
-        HostName {pki-server IP}
-        User pluser
-```
-
-Make sure that you are now able to SSH to the `pki-server`.
-
-```bash
-ssh pki-server
-```
-
 ## Change VM hostnames
 
 Now that you have made sure all VMs are accessible from the workstation VM, we will now change the hostnames to match how we are referring to the hosts. 

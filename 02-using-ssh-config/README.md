@@ -1,5 +1,54 @@
 # SSH Through a Jumpbox
 
+## Initial SSH Config
+
+So far, you had to specify the VM IP when connecting via SSH. To simplify this process, and be able to SSH to the VMs using simple names, we will set hosts in the SSH config file. 
+
+Create or edit the SSH config file on your workstation. 
+
+```bash
+vi ~/.ssh/config
+```
+
+Add the following lines
+
+```text
+Host webserver
+        HostName {webserver IP}
+        User pluser
+        IdentityFile ~/.ssh/id_ed25519
+```
+
+- `Host`: the name (or list of names) that we will be able to use to ssh to the host. 
+- `HostName`: what host to connect to. We will identify the host by their IP. 
+- `User`: the user to connect as
+- `IdentityFile`: the SSH key to use when connecting to the host. 
+
+Save and exit the file. 
+
+From your workstation, test your new SSH configuration. 
+
+```bash
+ssh webserver
+```
+
+You are now able to ssh to the `webserver` host without specifying the IP address every time. 
+
+On your workstation, edit the SSH config file to add the following lines. 
+
+```text
+Host pki-server
+        HostName {pki-server IP}
+        User pluser
+        IdentityFile ~/.ssh/id_ed25519
+```
+
+Make sure that you are now able to SSH to the `pki-server`.
+
+```bash
+ssh pki-server
+```
+
 ## Jumpbox ssh configuration
 
 Edit the SSH config file on your workstation. 
@@ -14,6 +63,7 @@ Change the webserver entry to also contain `jumpbox` on on the host line.
 Host webserver jumpbox
         HostName {webserver IP}
         User pluser
+        IdentityFile ~/.ssh/id_ed25519
 ```
 
 Hosts can have several different names assigned to them, in a space separated list. The indented lines for each host are different configs that have been set for each. 
@@ -60,6 +110,7 @@ Host private
         HostName {private IP address}
         User pluser
         ProxyJump jumpbox
+        IdentityFile ~/.ssh/id_ed25519
 ```
 
 Now you can connect to a server easily through the jumpbox without needing to specify anything

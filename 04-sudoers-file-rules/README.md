@@ -28,7 +28,7 @@ Add the following line to the bottom of the file.
 
 Running `visudo` without any flags will modify the global sudoers file.
 
-To view the sudoers file, run `cat /etc/sudoers`. This will show the same content as we saw using `visudo`. Do not edit the `/etc/sudoers` file directly. 
+To view the sudoers file, run `sudo cat /etc/sudoers`. This will show the same content as we saw using `visudo`. Do not edit the `/etc/sudoers` file directly. 
 
 ## Sudoers file rule priority
 
@@ -40,11 +40,11 @@ pluser ALL=(ALL) ALL
 
 ...
 
-# Restrict everyone in the courseadmin group (which pluser belongs to) to only have sudo access to apt-get
-%courseadmin ALL=(ALL) /usr/bin/apt-get
+# Restrict pluser to only have sudo access to apt-get
+pluser ALL=(ALL) /usr/bin/apt-get
 ```
 
-In the example above, even though we added a rule giving `pluser` full access, the later rule for the `courseadmin` group overrides this, and gives `pluser` sudo access to only `apt-get`. 
+In the example above, even though we added a rule giving `pluser` full access, the later rule gives `pluser` sudo access to **only** `apt-get`. 
 
 ## Visudo safety net
 
@@ -118,5 +118,17 @@ ansibleuser  ALL=(ALL) ALL
 - `ALL`: Applies to all hosts (can be restricted to specific hosts).
 - `(ALL)`: The user can execute commands as any user, including root.
 - `ALL`: The user can run all commands.
+
+View the file you just created
+
+```bash
+ls -l /etc/sudoers.d
+```
+
+And it's content
+
+```bash
+cat /etc/sudoers.d/ansible
+```
 
 When finished, repeat the **Modifying sudoers file** and **Dedicated sudo policy file** sections on `pki-server`. 
