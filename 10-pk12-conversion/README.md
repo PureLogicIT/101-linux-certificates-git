@@ -18,7 +18,7 @@ openssl pkcs12 -export -out myapp-cert.p12 -inkey myapp-key.pem -in myapp-cert.p
 - `-out myapp-cert.p12` Defines the output file.
 - `-inkey myapp-key.pem*` Points to the private key file that corresponds to the certificate.
 - `-in myapp-cert.pem` Specifies the certificate file to include in the .p12 file.
-- `-certfile my-ca/ca-cert.pem` Adds an intermediate certificate to complete the chain of trust.
+- `-certfile my-ca/cacert.pem` Adds an intermediate certificate to complete the chain of trust.
 
 This command will prompt you to set a password for the `.p12` file, which will be required when importing the file into other systems.
 

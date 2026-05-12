@@ -6,7 +6,7 @@ This guide covers key commands for verifying SSL certificates using OpenSSL. You
 
 ## Viewing Certificate Information
 
-To view basic information about a certificate, such as its name, expiry date, and issuing authority, use the following command:
+To view basic information about a certificate, such as its name, expiry date, and issuing authority, use the following command on `webserver`:
 
 ```bash
 openssl x509 -in myapp-cert.pem -text -noout

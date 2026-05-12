@@ -93,8 +93,10 @@ Now that the `cacert.pem` file has been generated, we want to distribute it to t
 On `workstation`, copy the certificate from `pki-server` to `webserver`, and to `workstation`. 
 
 ```bash
-scp pki-server:my-ca/cacert.pem webserver:
-scp pki-server:my-ca/cacert.pem ./
+ssh webserver "mkdir ~/my-ca"
+scp pki-server:my-ca/cacert.pem webserver:~/my-ca/
+mkdir ~/my-ca
+scp pki-server:my-ca/cacert.pem ~/my-ca
 ```
 
 Now that the file is copied off of `pki-server`, you can install it on `webserver` and `workstation`. 
@@ -110,10 +112,10 @@ Copy the CA Certificate to the system’s certificate directory:
 #### Debian/Ubuntu
 
 ```bash
-sudo cp cacert.pem /usr/local/share/ca-certificates/my-ca-cert.crt
+sudo cp my-ca/cacert.pem /usr/local/share/ca-certificates/my-ca-cert.crt
 ```
 
-**Note:** The file extension must but `.crt` and the file must be in `PEM` format
+**Note:** The file extension must be `.crt` and the file must be in `PEM` format. 
 
 Update the Certificate Store:
 

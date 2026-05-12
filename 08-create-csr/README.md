@@ -24,6 +24,8 @@ To obtain a certificate from your CA, you first need to generate a private key a
 
 ### Generate the Private Key
 
+On `webserver`, run the following. 
+
 ```bash
 openssl genpkey -algorithm RSA -out myapp-key.pem -aes256
 ```
@@ -67,11 +69,21 @@ head -1 myapp-csr.pem
 
 ### Submit the CSR to the CA
 
-The CSR can be sent to your CA for signing. If you're using an internal CA created with OpenSSL, the CA can sign the CSR as follows:
+Send the CSR to the `pki-server` for signing. 
+
+On `workstation`, run the following. 
+
+```bash
+scp webserver:~/myapp-csr.pem pki-server:
+```
+
+If you're using an internal CA created with OpenSSL, the CA can sign the CSR as follows:
 
 #### Use the CA from the previous step
 
 To use the CA from the previous step, we'll need to modify the openssl config file to tell it where to find the CA
+
+On `pki-server`, do the following. 
 
 ```bash
 sudo vi /usr/lib/ssl/openssl.cnf
@@ -119,6 +131,14 @@ openssl ca -in myapp-csr.pem -out myapp-cert.pem -days 365
 - `-out myapp-cert.pem`: Defines the output file for the signed certificate.
 - `-days 365`: Sets the certificate to be valid for 1 year.
 
+Copy the signed cert to `webserver`. 
+
+On `workstation`:
+
+```bash
+scp pki-server:~/myapp-cert.pem webserver:
+```
+
 ## Subject Alternative Names (SAN) vs. Common Name (CN)
 
 The Common Name (CN) field traditionally holds the primary domain name for the certificate, but today, best practices recommend using Subject Alternative Names (SAN) for flexibility and security.
@@ -132,7 +152,7 @@ The Common Name (CN) field traditionally holds the primary domain name for the c
 
 To include SAN in the CSR, you can use a configuration file or include the additional hostnames in the command line.
 
-To create with a configuration file first create a file, in this case we will name it `san.cnf`:
+On `webserver`, create and edit `san.cnf` to later create with a configuration file. 
 
 ```ini
 [ req ]
@@ -144,7 +164,7 @@ prompt = no
 CN = myapp.domain.com
 
 [ req_ext ]
-email_in_dn     = no            # Don't concat the email in the DNsubjectAltName = @alt_names
+subjectAltName = @alt_names
 
 [alt_names]
 DNS.1 = myapp.domain.com
@@ -192,7 +212,7 @@ The expiration date of a certificate impacts how often it must be renewed. Choos
 
 ### Setting the Expiration Date with OpenSSL
 
-You can specify the expiration period when signing the certificate:
+Note that you can specify the expiration period when signing the certificate:
 
 ```bash
 openssl ca -in myapp-csr.pem -out myapp-cert.pem -days 365

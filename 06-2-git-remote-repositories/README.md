@@ -8,7 +8,7 @@ Gitea is a lightweight alternative to other git providers, giving an easy and fa
 
 Before we can move our code off the local workstation and into the web, we need to set up a destination. 
 
-Login to gitea at [git.dev.purelogicit.ca](git.dev.purelogicit.ca)
+Login to gitea at [git.dev.purelogicit.ca](https://git.dev.purelogicit.ca)
 
 Navigate to your account settings, and open the `SSH / GPG Keys` section. 
 
@@ -40,7 +40,7 @@ Add your Gitea repository as a remote.
 git remote add origin git@git.dev.purelogicit.ca:{your username}/{your repository name}.git
 ```
 
-- Note that this line can also be copied from the gitea page where 
+- Note that this line can also be copied from the Gitea page page.  
 
 Now, git push will publish your changes to the remote repository that was set above. 
 
@@ -62,7 +62,7 @@ rm -rf git-repo
 The git repo is now deleted, so we'll `clone` it from gitea to restore our local copy. 
 
 ```bash
-git clone git.dev.purelogicit.ca:{your username}/{your repository name}.git git-repo
+git clone git@git.dev.purelogicit.ca:{your username}/{your repository name}.git git-repo
 cd git-repo
 ```
 
@@ -127,18 +127,93 @@ Delete `feature-branch`. It can still be restored by viewing the list of all bra
 
 ## Rebase and squash merges
 
+When working on a project, it's common to make small commits, only containing a typo or a small change. Before merging this branch into `master`, you may want to clean up the commit history of your feature branch by combining (squashing) the small commits into one or two larger commits. This is done using an interactive rebase. 
 
+Pull the changes from Gitea, then create and switch to a new branch:
 
-In terminal:
-git branch another-new-branch
-git add
-git commit
-git add
-git commit
-git add
-git commit
-git squash (2 commits total)
+```bash
 git checkout master
-git rebase/merge another-new-branch
 git pull
-git push -A (--all-branches)
+git checkout -b feature-merging
+```
+
+Make several small changes to the `README.md` file, and commit the changes after each one. 
+
+```bash
+echo "First small change" >> README.md
+git add README.md
+git commit -m "First small change"
+```
+
+```bash
+echo "Second small change" >> README.md
+git add README.md
+git commit -m "Second small change"
+```
+
+```bash
+echo "Third small change" >> README.md
+git add README.md
+git commit -m "Third small change"
+```
+
+View the git log to see the three new commits we just added. 
+
+```bash
+git log
+```
+
+Perform an interactive rebase to squash the last three commits together. 
+
+```bash
+git rebase -i HEAD~3
+```
+
+- `-i HEAD~3`: `-i` opens an interactive menu, and `HEAD~3` tells Git to grab your 3 most recent commits.
+
+This will open a text editor with a list of the last three commits. 
+
+```text
+pick 621b34f First small change
+pick d034169 Second small change
+pick f43f56f Third small change
+
+# And an explanation below...
+```
+
+Change the first 3 lines to match the following, having the 2nd and 3rd lines start with `squash`. 
+
+```text
+pick 621b34f First small change
+squash d034169 Second small change
+squash f43f56f Third small change
+```
+
+Save and exit the file. 
+
+Git will open another text editor allowing you to combine the commit messages. You can leave it as is, making the commit message a combination of all 3, or edit the message to a simpler description. 
+
+Save and exit the file again. 
+
+Check the git log again. The 3 commits have now been combined to only 1. 
+
+```bash
+git log
+```
+
+Now, checkout master and merge the branch. 
+
+```bash
+git checkout master
+git merge feature-merging
+```
+
+Pull, then push your changes to the remote repository. 
+
+```bash
+git pull
+git push --all
+```
+
+- `--all`: Pushes all of your local branches to the remote repository at once, rather than just your current branch.
+

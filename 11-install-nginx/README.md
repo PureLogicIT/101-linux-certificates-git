@@ -41,15 +41,15 @@ Create our application directory. We'll use the git repository from the last ste
 
 ```bash
 cd /var/www
-git clone https://github.com/PureLogicIT/101-linux-certificates-git tutorial
-cd tutorial/11-install-nginx
-git checkout git-example
+sudo git clone https://github.com/PureLogicIT/101-linux-certificates-git tutorial
+cd tutorial
+sudo git checkout git-example
 ```
 
-Verify that the index.html file is correct.
+Edit `index.html` and edit the `WELCOME MESSAGE HERE` text. 
 
 ```bash
-cat index.html
+sudo vim index.html
 ```
 
 ## Set up a virtual host on port 80
@@ -57,7 +57,6 @@ cat index.html
 Create our application file
 
 ```bash
-cd ..
 sudo cp tutorial.conf /etc/nginx/sites-available/
 cd /etc/nginx/sites-enabled/
 sudo ln -s /etc/nginx/sites-available/tutorial.conf
@@ -85,6 +84,27 @@ server {
 }
 ```
 
+Copy the cert and private key to the directory where nginx expects them to be, based on our tutorial.conf file. 
+
+```bash
+sudo cp ~/myapp-cert.pem /etc/nginx/
+sudo cp ~/myapp-key.pem /etc/nginx/
+```
+
+Since nginx will need to use the private key, and your private key was secured with a passphrase, add a decrypted version of the key to the `/etc/nginx` folder. 
+
+First, create a copy of the encrypted key. 
+
+```bash
+sudo cp /etc/nginx/myapp-key.pem /etc/nginx/myapp-key.pem.enc
+```
+
+Unencrypt the private key. Enter the passphrase for the key. 
+
+```bash
+sudo openssl rsa -in /etc/nginx/myapp-key.pem.enc -out /etc/nginx/myapp-key.pem
+```
+
 Restart the NGINX service
 
 ```bash
@@ -94,7 +114,13 @@ sudo service nginx restart
 Test the application
 
 ```bash
-curl localhost
+curl http://localhost
 ```
 
 Now you can connect to the application on port 80
+
+# justin help, do we do this or go back and fix the cert before
+
+```bash
+curl --resolve myapp.domain.com:443:127.0.0.1 https://myapp.domain.com
+```

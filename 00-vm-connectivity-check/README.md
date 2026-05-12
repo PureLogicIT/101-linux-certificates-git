@@ -9,7 +9,7 @@ We will be using 4 VMs:
 
 ## Prerequisite
 
-First, verify that we ssh from your laptop to the workstation VM. This will also create the `.ssh` directory at the same time. 
+First, verify that we can ssh from your laptop to the workstation VM. This will also create the `.ssh` directory at the same time. 
 
 ```bash
 ssh pluser@{workstation IP}

@@ -100,7 +100,7 @@ When adding rules to the `sudoers` file, it is important to always add full abso
 
 You can also create individual sudoers files for users or groups, you can modify those with the `-f` option with the cli. This is better practice than modifying the global sudoers file like we did before. 
 
-Note that the `ansible` filename must not contains a `.` (period). 
+Note that the `ansible` filename must not contain a `.` (period). 
 
 ```bash
 sudo visudo -f /etc/sudoers.d/ansible
