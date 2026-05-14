@@ -23,4 +23,3 @@ Other person, on terminal, create new branch, make change to readme, commit and 
 then someone, idk who, goes to gitea creates an PR, adds the other as a reviewer
 
 Review the PR, merge it. both go back to terminals and pull again
-
